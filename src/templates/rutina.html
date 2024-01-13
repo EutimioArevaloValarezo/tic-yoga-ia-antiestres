@@ -1,0 +1,58 @@
+{% extends "/plantillas/layout.html" %}
+
+{% block content %}
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.4/socket.io.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="{{ url_for('static', filename='js/socket.js') }}"></script>
+
+
+<div class="containe d-flex justify-content-center card mt-5 w-75 mx-auto">
+  <div class="row">
+    <div class="col-md-6">
+      <img id="pose_image" class="img-fluid object-fit-fill h-100" alt="imagen">
+    </div>
+    <div class="col-md-6">
+      <div class="row">
+        <div class="col-md-12 d-flex justify-content-center">
+          <div class="progress blue">
+            <span class="progress-left">
+              <span class="progress-bar"></span>
+            </span>
+            <span class="progress-right">
+              <span class="progress-bar"></span>
+            </span>
+            <div class="progress-value" id="idPresicion">0%</div>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <img src="{{ url_for('video_feed') }}" class="img-fluid object-fit-fill">
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!--MODAL-->
+
+<div class="modal fade" id="my-modal" tabindex="-1" role="dialog" aria-labelledby="my-modal-title" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="my-modal-title">Título del modal</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <h1>TIPO</h1>
+        <h2 id="idTiempoRespiracion"></h2>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
