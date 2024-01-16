@@ -1,4 +1,5 @@
 import bson
+from decouple import config
 
 from flask import render_template, jsonify, Response, request, session
 from flask_socketio import SocketIO
@@ -9,7 +10,7 @@ from db import db
 from routes.control import get_posturas_rutina, get_lista_posturas, get_index_posturas
 
 app_socket = SocketIO(app)
-app.secret_key = 'Timoarevalo@14'
+app.secret_key = str(config('KEY_SESSION'))
 
 
 @app.route('/')
@@ -50,12 +51,12 @@ def rutina():
     except Exception as e:
         return e
 
-@app.route('/practicar/rutina')
-def rutina():
-    try:
-        return render_template('rutina.html')
-    except Exception as e:
-        return e
+# @app.route('/practicar/rutina')
+# def rutina():
+#     try:
+#         return render_template('rutina.html')
+#     except Exception as e:
+#         return e
     
 @app.route('/practicar_rutina')
 def practicar_rutina():
