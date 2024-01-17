@@ -31,7 +31,7 @@ def seleccionar():
 @app.route('/rutina/<id_rutina>', methods=['GET'])
 def get_rutina(id_rutina):
     try:
-        posturas = get_lista_posturas(id_rutina)
+        _, posturas = get_lista_posturas(id_rutina)
         return jsonify(posturas)
     except Exception as e:
         return jsonify(e)
@@ -40,8 +40,9 @@ def get_rutina(id_rutina):
 def post_rutina():
     try:
         id_rutina = request.form.get('get_rutina')
-        posturas = get_index_posturas(id_rutina)
+        repeticiones, posturas = get_index_posturas(id_rutina)
         session['index_posturas'] = posturas
+        session['repeticiones'] = repeticiones
         return render_template('calibrar.html')
     except Exception as e:
         return jsonify(e)
@@ -67,8 +68,9 @@ def rutina():
 @app.route('/practicar_rutina')
 def practicar_rutina():
     index_posturas = session.get('index_posturas', None)
-    print(index_posturas)
-    return Response(get_posturas_rutina(app_socket, index_posturas), mimetype='multipart/x-mixed-replace; boundary=frame')
+    repeticiones = session.get('repeticiones', None)
+    # print(index_posturas)
+    return Response(get_posturas_rutina(app_socket, index_posturas, repeticiones), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route('/practicar/feedback')
 def feedback():

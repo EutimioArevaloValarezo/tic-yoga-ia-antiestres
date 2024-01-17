@@ -22,16 +22,14 @@ function cerrarModal() {
 
 // Ejecutar las cuentas regresivas en orden
 async function ejecutarCuentasRegresivas(inhalar, retener, exhalar, repeticiones) {
-    for(let i = 0; i < repeticiones; i++) {
-        await cuentaRegresiva(inhalar, 'Inhalar');
-        await cuentaRegresiva(retener, 'Retener');
-        await cuentaRegresiva(exhalar, 'Exhalar');
-    }
+    await cuentaRegresiva(inhalar, 'Inhalar');
+    await cuentaRegresiva(retener, 'Retener');
+    await cuentaRegresiva(exhalar, 'Exhalar');
     cerrarModal();
 }
 
 socket.on('pose_update', function (data) {
-    document.getElementById('pose_image').src = '../static/images/' + data.pose_index + '.png';
+    document.getElementById('pose_image').src = '../static/images/posturas/' + data.pose_index + '.png';
 });
 
 socket.on('precision_update', function (data) {
@@ -45,7 +43,7 @@ socket.on('redireccion', function (data) {
 socket.on('pop_up', function (data) {
     $('#my-modal').modal('show');
     
-    ejecutarCuentasRegresivas(data.inhalar, data.retener, data.exhalar, data.repeticiones);
+    ejecutarCuentasRegresivas(data.inhalar, data.retener, data.exhalar);
 });
 
 socket.on('precision_update', function (data) {

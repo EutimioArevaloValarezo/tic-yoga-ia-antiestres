@@ -17,7 +17,7 @@ $(document).ready(function () {
                         <div class="col-md-12 mt-2">
                             <div class="row g-0">
                                 <div class="col-md-2">
-                                    <img src="../static/images/${postura.index_modelo}.png" class="img-fluid rounded-start w-100" style="height: 200px; object-fit: contain;" alt="${postura.nombre}">
+                                    <img src="../static/images/posturas/${postura.index_modelo}.png" class="img-fluid rounded-start w-100" style="height: 200px; object-fit: contain;" alt="${postura.nombre}">
                                 </div>
                                 <div class="col-md-10">
                                     <div class="card-body">

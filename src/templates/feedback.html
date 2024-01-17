@@ -2,6 +2,18 @@
 
 {% block content %}
 
+<script>
+    var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+    var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+        return new bootstrap.Popover(popoverTriggerEl)
+    })
+</script>
+
+<button type="button" class="btn btn-primary" data-bs-toggle="popover" title="Popover Header"
+    data-bs-content="Some content inside the popover">
+    Toggle popover
+</button>
+
 <form action="">
     <div class="d-flex justify-content-center card mt-5 w-75 mx-auto">
         <div class="card-header text-center">
@@ -56,32 +68,42 @@
 
             <div class="row g-3">
                 <div class="col-md-4">
-                    <!-- <label for="range1" class="form-label" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-original-title="Tooltip on left">Facilidad de uso</label> -->
-                    <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-original-title="Tooltip on left">Facilidad de uso</button>
-                    <input type="range" class="form-range" min="0" max="5" step="0.5" value="0" id="range1" required>
+                    <label for="range1" class="form-label">Facilidad de uso: <output id="output1">0</output></label>
+                    <input type="range" class="form-range" min="0" max="5" step="0.5" value="0" id="range1"
+                        oninput="output1.value = range1.value" required>
+
                 </div>
                 <div class="col-md-4">
-                    <label for="range2" class="form-label">Utilidad Percibida</label>
-                    <input type="range" class="form-range" min="0" max="5" step="0.5" value="0" id="range2" required>
+                    <label for="range2" class="form-label">Utilidad Percibida: <output id="output2">0</output></label>
+                    <input type="range" class="form-range" min="0" max="5" step="0.5" value="0" id="range2"
+                        oninput="output2.value = range2.value" required>
                 </div>
                 <div class="col-md-4">
-                    <label for="range3" class="form-label">Aceptación Tecnológica</label>
-                    <input type="range" class="form-range" min="0" max="5" step="0.5" value="0" id="range3" required>
+                    <label for="range3" class="form-label">Aceptación Tecnológica: <output
+                            id="output3">0</output></label>
+                    <input type="range" class="form-range" min="0" max="5" step="0.5" value="0" id="range3"
+                        oninput="output3.value = range3.value" required>
                 </div>
                 <div class="col-md-4">
-                    <label for="range4" class="form-label">Satisfacción General</label>
-                    <input type="range" class="form-range" min="0" max="5" step="0.5" value="0" id="range4" required>
+                    <label for="range4" class="form-label">Satisfacción General: <output id="output4">0</output></label>
+                    <input type="range" class="form-range" min="0" max="5" step="0.5" value="0" id="range4"
+                        oninput="output4.value = range4.value" required>
                 </div>
                 <div class="col-md-4">
-                    <label for="range5" class="form-label">Efectividad en la Gestión del Estrés</label>
-                    <input type="range" class="form-range" min="0" max="5" step="0.5" value="0" id="range5" required>
+                    <label for="range5" class="form-label">Efectividad en la Gestión del Estrés: <output
+                            id="output5">0</output></label>
+                    <input type="range" class="form-range" min="0" max="5" step="0.5" value="0" id="range5"
+                        oninput="output5.value = range5.value" required>
                 </div>
                 <div class="col-md-4">
-                    <label for="range6" class="form-label">Motivación para el Uso Continuo:</label>
-                    <input type="range" class="form-range" min="0" max="5" step="0.5" value="0" id="range6" required>
+                    <label for="range6" class="form-label">Motivación para el Uso Continuo: <output
+                            id="output6">0</output></label>
+                    <input type="range" class="form-range" min="0" max="5" step="0.5" value="0" id="range6"
+                        oninput="output6.value = range6.value" required>
                 </div>
                 <div class="col-md-12">
-                    <label for="exampleTextarea" class="form-label mt-4">Comentarios adicionales: <span>(Opcional)</span></label>
+                    <label for="exampleTextarea" class="form-label">Comentarios adicionales:
+                        <span>(Opcional)</span></label>
                     <textarea class="form-control" id="exampleTextarea" rows="2"></textarea>
                 </div>
                 <div class="d-grid gap-2 col-md-12">
