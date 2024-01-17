@@ -1,0 +1,30 @@
+{% extends "/plantillas/layout.html" %}
+
+{% block content %}
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.4/socket.io.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="{{ url_for('static', filename='js/socket.js') }}"></script>
+
+<div class="d-flex justify-content-center card mt-5 w-75 mx-auto">
+    <div class="card-header text-center">
+        <h3>Calibrar posicion en la camara</h3>
+    </div>
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <img src="{{ url_for('static', filename='images/referencia.jpg') }}" class="img-fluid rounded-start" style="height: 75%; object-fit: contain;" alt="refencia">
+            </div>
+            <div class="col-md-6">
+                
+                <img src="{{ url_for('calibrar_posicion') }}" class="img-fluid rounded-start" style="height: 75%; object-fit: contain;">
+            </div>
+            <div class="col-md-12">
+                <p>Por favor, ubícate frente a la cámara de manera que toda tu figura sea visible en el encuadre. Luego, estira tus manos hacia arriba, alzando tus brazos y estirándolos hacia el cielo, tal como se muestra en la imagen de referencia. Este paso es crucial para que puedas encontrar la mejor ubicación dentro de tu entorno para realizar tu rutina de yoga. Sigue estas instrucciones cuidadosamente para obtener los mejores resultados. ¡Gracias! 😊</p>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

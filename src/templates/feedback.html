@@ -1,0 +1,96 @@
+{% extends "/plantillas/layout.html" %}
+
+{% block content %}
+
+<form action="">
+    <div class="d-flex justify-content-center card mt-5 w-75 mx-auto">
+        <div class="card-header text-center">
+            <h3>Registro de datos</h3>
+        </div>
+        <div class="card-body">
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label for="inputNombre" class="form-label">Nombre:</label>
+                    <input type="text" class="form-control" id="inputNombre" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="inputApellido" class="form-label">Apellido:</label>
+                    <input type="text" class="form-control" id="inputApellido" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="inputCedula" class="form-label">Cédula:</label>
+                    <input type="text" class="form-control" id="inputCedula" maxlength="10" minlength="10" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="inputEmail" class="form-label">Email:</label>
+                    <input type="email" class="form-control" id="inputEmail" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="inputTelefono" class="form-label">Teléfono Celular:</label>
+                    <input type="text" class="form-control" id="inputTelefono" minlength="10" maxlength="10" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="inputState" class="form-label">Facultad:</label>
+                    <select id="inputState" class="form-select" required>
+                        <option selected>Choose...</option>
+                        <option>...</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="inputState" class="form-label">Carrera:</label>
+                    <select id="inputState" class="form-select" required>
+                        <option selected>Seleccionar...</option>
+                        <option>...</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-center card mt-2 w-75 mx-auto">
+        <div class="card-header text-center">
+            <h3>Encuesta de satisfacción de usuario</h3>
+        </div>
+        <div class="card-body">
+
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <!-- <label for="range1" class="form-label" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-original-title="Tooltip on left">Facilidad de uso</label> -->
+                    <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-original-title="Tooltip on left">Facilidad de uso</button>
+                    <input type="range" class="form-range" min="0" max="5" step="0.5" value="0" id="range1" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="range2" class="form-label">Utilidad Percibida</label>
+                    <input type="range" class="form-range" min="0" max="5" step="0.5" value="0" id="range2" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="range3" class="form-label">Aceptación Tecnológica</label>
+                    <input type="range" class="form-range" min="0" max="5" step="0.5" value="0" id="range3" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="range4" class="form-label">Satisfacción General</label>
+                    <input type="range" class="form-range" min="0" max="5" step="0.5" value="0" id="range4" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="range5" class="form-label">Efectividad en la Gestión del Estrés</label>
+                    <input type="range" class="form-range" min="0" max="5" step="0.5" value="0" id="range5" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="range6" class="form-label">Motivación para el Uso Continuo:</label>
+                    <input type="range" class="form-range" min="0" max="5" step="0.5" value="0" id="range6" required>
+                </div>
+                <div class="col-md-12">
+                    <label for="exampleTextarea" class="form-label mt-4">Comentarios adicionales: <span>(Opcional)</span></label>
+                    <textarea class="form-control" id="exampleTextarea" rows="2"></textarea>
+                </div>
+                <div class="d-grid gap-2 col-md-12">
+                    <button type="submit" class="btn btn-primary btn-block">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+{% endblock %}

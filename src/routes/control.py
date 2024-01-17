@@ -77,7 +77,7 @@ def get_posturas_rutina(app_socket, index_posturas):
                         index_posturas_cont += 1
                         if index_posturas_cont >= len(index_posturas):
                             # Redirige a otra página al finalizar la rutina
-                            app_socket.emit('redireccion', {'redireccionar': 'home.html'})
+                            app_socket.emit('redireccion', {'ruta': '/practicar/feedback'})
                             break
                             # print("FINALIZADO")
                         else:
@@ -115,6 +115,8 @@ def cont_landmarks(results):
 
 def get_calibracion_rutina(app_socket):
     camera = cv2.VideoCapture(0)
+    camera.set(3, 720)
+    camera.set(4, 720)
     mpDraw = mp.solutions.drawing_utils
     my_pose = mp.solutions.pose
     pose = my_pose.Pose()
@@ -130,8 +132,8 @@ def get_calibracion_rutina(app_socket):
             if result.pose_landmarks:
                 res_cont = cont_landmarks(result.pose_landmarks.landmark)
                 # print(res_cont)
-                if(res_cont == 18):
-                    app_socket.emit('calibrar', {'mensaje': 'Correcto'})
+                if(res_cont == 33):
+                    app_socket.emit('redireccion', {'ruta': '/practicar/rutina'})
                     break
                 else:
                     app_socket.emit('calibrar', {'mensaje': 'Incorrecto'})

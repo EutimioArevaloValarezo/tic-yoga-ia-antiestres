@@ -39,7 +39,7 @@ socket.on('precision_update', function (data) {
 });
 
 socket.on('redireccion', function (data) {
-    window.location.href = window.location.origin
+    window.location.href = window.location.origin+data.ruta
 });
 
 socket.on('pop_up', function (data) {
