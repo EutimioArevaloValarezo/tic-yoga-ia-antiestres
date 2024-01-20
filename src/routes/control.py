@@ -1,14 +1,36 @@
-import cv2
 import torch
 import torch.nn as nn
 import torchvision.models as models
 import torchvision.transforms as transforms
+
+import cv2
 import time
+import pytz
+import datetime
 import bson
 import mediapipe as mp
 
+from flask import session
 from PIL import Image
 from db import db
+
+def get_duracion_fecha(inicio, fin):
+    duracion = fin - inicio
+    minutos = int(duracion // 60)
+    segundos = int(duracion % 60)
+    var_inicio = datetime.datetime.fromtimestamp(inicio)
+    var_fin = datetime.datetime.fromtimestamp(fin)
+
+    ecuador_tz = pytz.timezone('America/Guayaquil')
+    var_inicio = var_inicio.astimezone(ecuador_tz)
+    var_fin = var_fin.astimezone(ecuador_tz)
+
+    fecha = var_inicio.strftime('%Y-%m-%d')
+
+    hora_inicio = var_inicio.strftime('%H:%M:%S') 
+    hora_fin = var_fin.strftime('%H:%M:%S')
+
+    return duracion, minutos, segundos, fecha, hora_inicio, hora_fin 
 
 def get_respiraciones(index_posturas):
     collection = db['postura']
@@ -20,7 +42,6 @@ def get_respiraciones(index_posturas):
             respiraciones.append(postura['respiracion'])
 
     return respiraciones
-
 
 def get_index_posturas(id_rutina):
     repeticiones, posturas = get_lista_posturas(id_rutina)
@@ -58,21 +79,20 @@ def inicializar_modelo():
 
     return modelo_yoga
 
-def get_posturas_rutina(app_socket, index_posturas, repeticiones):
-    camera = cv2.VideoCapture(0)  # Accede a la cámara, 0 es la cámara predeterminada
-
+def get_posturas_rutina(modelo_yoga, app_socket, index_posturas, repeticiones):
+    camera = cv2.VideoCapture(1)
     index_posturas_cont = 0
     repeticiones_cont = 0
     lista_respiraciones = get_respiraciones(index_posturas)
     last_prediction_time = time.time()
-
     app_socket.emit('pose_update', {'pose_index': index_posturas[index_posturas_cont]})
     while True:
         success, frame = camera.read()
         if not success:
             break
         else:
-            color_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            color_frame = cv2.cvtColor(gray_frame, cv2.COLOR_GRAY2RGB)
             img_pil = Image.fromarray(color_frame)
             img_processed = transform(img_pil).unsqueeze(0).to(device)
             current_time = time.time()
@@ -85,8 +105,9 @@ def get_posturas_rutina(app_socket, index_posturas, repeticiones):
 
                 # Calcula la precisión
                 precision = round(probabilities[index_posturas[index_posturas_cont]].item() * 100, 2)
-
-                if precision > 70 and index_posturas[index_posturas_cont] == output.argmax().item():
+                if (index_posturas[index_posturas_cont] == 2):
+                    precision = precision * 5
+                if precision >= 10:
                     
                     controlar_respiraciones(app_socket, index_posturas_cont, lista_respiraciones)
                     index_posturas_cont += 1
@@ -99,7 +120,7 @@ def get_posturas_rutina(app_socket, index_posturas, repeticiones):
                             break
                         else:
                             index_posturas_cont = 0
-
+                            app_socket.emit('pose_update', {'pose_index': index_posturas[index_posturas_cont]})
                     else:
                         # Cambia la imagen de referencia en el HTML
                         app_socket.emit('pose_update', {'pose_index': index_posturas[index_posturas_cont]})
@@ -116,7 +137,6 @@ def get_posturas_rutina(app_socket, index_posturas, repeticiones):
             yield (b'--frame\r\n'
                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # Muestra el video como secuencia de imágenes
 
-
 def controlar_respiraciones(app_socket, index_posturas_cont, lista_respiracion):
     inhala = lista_respiracion[index_posturas_cont]['inhalar']
     retiene = lista_respiracion[index_posturas_cont]['retener']
@@ -127,7 +147,7 @@ def controlar_respiraciones(app_socket, index_posturas_cont, lista_respiracion):
         'retener': retiene,
         'exhalar': exhala
     })
-    time.sleep(inhala + retiene + exhala + 3)
+    time.sleep(inhala + retiene + exhala + 4)
 
 def cont_landmarks(results):
     cont_landmarks_aux = 0
@@ -137,7 +157,7 @@ def cont_landmarks(results):
     return cont_landmarks_aux
 
 def get_calibracion_rutina(app_socket):
-    camera = cv2.VideoCapture(0)
+    camera = cv2.VideoCapture(1)
     camera.set(3, 720)
     camera.set(4, 720)
     mpDraw = mp.solutions.drawing_utils
@@ -155,24 +175,23 @@ def get_calibracion_rutina(app_socket):
             if result.pose_landmarks:
                 res_cont = cont_landmarks(result.pose_landmarks.landmark)
                 # print(res_cont)
-                if(res_cont == 33):
+                if(res_cont == 17):
                     app_socket.emit('redireccion', {'ruta': '/practicar/rutina'})
                     break
-                else:
-                    app_socket.emit('calibrar', {'mensaje': 'Incorrecto'})
-                    # break
+                # else:
+                #     app_socket.emit('calibrar', {'mensaje': 'Incorrecto'})
+                #     # break
                 mpDraw.draw_landmarks(frame, result.pose_landmarks, my_pose.POSE_CONNECTIONS)
-            ret, buffer = cv2.imencode('.jpg', frame)
+            ret, buffer = cv2.imencode('.png', frame)
             frame = buffer.tobytes()
             yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # Muestra el video como secuencia de imágenes
+                   b'Content-Type: image/png\r\n\r\n' + frame + b'\r\n')  # Muestra el video como secuencia de imágenes
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-modelo_yoga = inicializar_modelo()
 
 transform = transforms.Compose([
         transforms.Resize((224, 224)),
         transforms.ToTensor(),
         transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
     ])
+

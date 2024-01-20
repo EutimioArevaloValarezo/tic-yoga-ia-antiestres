@@ -6,21 +6,38 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="{{ url_for('static', filename='js/socket.js') }}"></script>
 
-<div class="d-flex justify-content-center card mt-5 w-75 mx-auto">
+
+<script>
+    // Crear un nuevo elemento de audio
+    var audio = new Audio('../static/voice/calibrar_instrucciones.mp3');
+
+    // Reproducir el audio
+    audio.play();
+
+</script>
+
+<div class="d-flex justify-content-center card mt-2 w-100 mx-auto">
     <div class="card-header text-center">
-        <h3>Calibrar posicion en la camara</h3>
+        <h3>Encontrar la Posición Correcta en la Cámara</h3>
     </div>
     <div class="card-body">
         <div class="row g-3">
-            <div class="col-md-12 card-text fs-1" style="text-align: justify;">
-                <p>Por favor, ubícate frente a la cámara de manera que toda tu figura sea visible en el encuadre. Luego, estira tus manos hacia arriba, alzando tus brazos y estirándolos hacia el cielo, tal como se muestra en la imagen de referencia. Este paso es crucial para que puedas encontrar la mejor ubicación dentro de tu entorno para realizar tu rutina de yoga. Sigue estas instrucciones cuidadosamente para obtener los mejores resultados. ¡Gracias! 😊</p>
+            <div class="col-md-12 card-text fs-3" style="text-align: justify;">
+                <p>Para optimizar tu práctica de yoga, es esencial que te ubiques adecuadamente frente a la cámara.
+                    Asegúrate de que tu cuerpo completo sea visible en el encuadre, extendiendo tus manos hacia arriba,
+                    tal como se ilustra en la imagen de referencia. Este paso es fundamental para determinar la
+                    ubicación más apropiada dentro de tu espacio para realizar tu rutina de yoga. Te instamos a seguir
+                    estas instrucciones con atención para garantizar los mejores resultados en tu práctica. 😊</p>
             </div>
             <div class="col-md-6">
-                <img src="{{ url_for('static', filename='images/referencia.jpg') }}" class="img-fluid rounded-start" style="height: 75%; object-fit: contain;" alt="refencia">
+                <img src="{{ url_for('static', filename='images/referencia.jpg') }}" class="img-fluid rounded-start"
+                    style="height: 100%; object-fit: contain; display: block; margin-left: auto; margin-right: auto;"
+                    alt="refencia">
             </div>
             <div class="col-md-6">
-                
-                <img src="{{ url_for('calibrar_posicion') }}" class="img-fluid rounded-start" style="height: 75%; object-fit: contain;">
+
+                <img src="{{ url_for('calibrar_posicion') }}" class="img-fluid rounded-start"
+                    style="height: 100%; object-fit: contain; ">
             </div>
         </div>
 

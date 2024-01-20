@@ -2,58 +2,75 @@
 
 {% block content %}
 
-<script>
-    var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
-    var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
-        return new bootstrap.Popover(popoverTriggerEl)
-    })
-</script>
+<script src="{{ url_for('static', filename='js/cargar_facultad.js') }}"></script>
 
-<button type="button" class="btn btn-primary" data-bs-toggle="popover" title="Popover Header"
-    data-bs-content="Some content inside the popover">
-    Toggle popover
-</button>
-
-<form action="">
+<form action="/guardar_sesion" method="post">
     <div class="d-flex justify-content-center card mt-5 w-75 mx-auto">
         <div class="card-header text-center">
-            <h3>Registro de datos</h3>
+            <h3>Datos de la rutina</h3>
         </div>
         <div class="card-body">
 
             <div class="row g-3">
-                <div class="col-md-6">
-                    <label for="inputNombre" class="form-label">Nombre:</label>
-                    <input type="text" class="form-control" id="inputNombre" required>
+                <div class="col-md-3">
+                    <label class="form-label" for="duracion">Fecha:</label>
+                    <input class="form-control" id="duracion" type="text" name="get_fecha" value="{{ fecha }}" readonly="">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label" for="horainicio">Hora de inicio:</label>
+                    <input class="form-control" id="horainicio" type="text" name="get_tiempoInicio" value="{{ tiempo_inicio }}" readonly="">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label" for="horafin">Hora de fin:</label>
+                    <input class="form-control" id="horafin" type="text" name="get_tiempoFin" value="{{ tiempo_fin }}" readonly="">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label" for="duracion">Duración:</label>
+                    <input class="form-control" id="duracion" type="text" name="get_duracion"
+                        value="{{ minutos }} minutos y {{ segundos }} segundos" readonly="">
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-center card mt-2 w-75 mx-auto">
+        <div class="card-header text-center">
+            <h3>Datos del usuario</h3>
+        </div>
+        <div class="card-body">
+
+            <div class="row g-3">
+                <div class="form-floating col-md-6">
+                    <input name="get_nombre" type="text" class="form-control" id="inputNombre" placeholder="Nombre:" required>
+                    <label for="inputNombre">Nombre:</label>
+                </div>
+                <div class="form-floating  col-md-6">
+                    <input name="get_apellido" type="text" class="form-control" id="inputApellido" placeholder="Apellido:" required>
+                    <label for="inputApellido">Apellido:</label>
+                </div>
+                <div class="form-floating col-md-4">
+                    <input name="get_cedula" type="text" class="form-control" id="inputCedula" placeholder="Cédula:" maxlength="10"
+                        minlength="10" required>
+                    <label for="inputCedula">Cédula:</label>
+                </div>
+                <div class="form-floating col-md-4">
+                    <input name="get_email" type="email" class="form-control" id="inputEmail" placeholder="E-mail:" required>
+                    <label for="inputEmail" class="form-label">E-mail:</label>
+                </div>
+                <div class="form-floating col-md-4">
+                    <input name="get_telefono" type="text" class="form-control" id="inputTelefono" placeholder="Teléfono:" minlength="10"
+                        maxlength="10" required>
+                    <label for="inputTelefono" class="form-label">Teléfono:</label>
                 </div>
                 <div class="col-md-6">
-                    <label for="inputApellido" class="form-label">Apellido:</label>
-                    <input type="text" class="form-control" id="inputApellido" required>
-                </div>
-                <div class="col-md-4">
-                    <label for="inputCedula" class="form-label">Cédula:</label>
-                    <input type="text" class="form-control" id="inputCedula" maxlength="10" minlength="10" required>
-                </div>
-                <div class="col-md-4">
-                    <label for="inputEmail" class="form-label">Email:</label>
-                    <input type="email" class="form-control" id="inputEmail" required>
-                </div>
-                <div class="col-md-4">
-                    <label for="inputTelefono" class="form-label">Teléfono Celular:</label>
-                    <input type="text" class="form-control" id="inputTelefono" minlength="10" maxlength="10" required>
-                </div>
-                <div class="col-md-6">
-                    <label for="inputState" class="form-label">Facultad:</label>
-                    <select id="inputState" class="form-select" required>
-                        <option selected>Choose...</option>
-                        <option>...</option>
+                    <label for="inputFacultad" class="form-label">Facultad:</label>
+                    <select name="get_facultad" id="inputFacultad" class="form-select" required>
                     </select>
                 </div>
                 <div class="col-md-6">
-                    <label for="inputState" class="form-label">Carrera:</label>
-                    <select id="inputState" class="form-select" required>
-                        <option selected>Seleccionar...</option>
-                        <option>...</option>
+                    <label for="inputCarrera" class="form-label">Carrera:</label>
+                    <select name="get_carrera" id="inputCarrera" class="form-select" required>
                     </select>
                 </div>
             </div>
@@ -62,57 +79,108 @@
 
     <div class="d-flex justify-content-center card mt-2 w-75 mx-auto">
         <div class="card-header text-center">
-            <h3>Encuesta de satisfacción de usuario</h3>
+            <h3>Encuesta de satisfacción</h3>
         </div>
         <div class="card-body">
 
             <div class="row g-3">
-                <div class="col-md-4">
-                    <label for="range1" class="form-label">Facilidad de uso: <output id="output1">0</output></label>
-                    <input type="range" class="form-range" min="0" max="5" step="0.5" value="0" id="range1"
-                        oninput="output1.value = range1.value" required>
 
-                </div>
                 <div class="col-md-4">
-                    <label for="range2" class="form-label">Utilidad Percibida: <output id="output2">0</output></label>
-                    <input type="range" class="form-range" min="0" max="5" step="0.5" value="0" id="range2"
-                        oninput="output2.value = range2.value" required>
+                    <label for="rangeFacilidadUso" class="form-label">
+                        <a tabindex="0" role="button" data-bs-toggle="popover" data-bs-trigger="hover"
+                            data-bs-placement="top" data-bs-title="Facilidad de uso"
+                            data-bs-content="Evalúa qué tan fácil es utilizar la aplicación de yoga. Se puede calificar en base la simplicidad y la claridad en la navegación y uso de la aplicación.">
+                            <i class="fas fa-info-circle"></i>
+                        </a>
+                        Facilidad de uso: <output id="output1">0</output>
+                    </label>
+                    <input name="get_FacilidadUso" type="range" class="form-range" min="0" max="5" step="0.5" value="0" id="rangeFacilidadUso"
+                        oninput="output1.value = rangeFacilidadUso.value" required>
                 </div>
+
                 <div class="col-md-4">
-                    <label for="range3" class="form-label">Aceptación Tecnológica: <output
-                            id="output3">0</output></label>
-                    <input type="range" class="form-range" min="0" max="5" step="0.5" value="0" id="range3"
-                        oninput="output3.value = range3.value" required>
+                    <label for="rangeUtilidad" class="form-label">
+                        <a tabindex="1" role="button" data-bs-toggle="popover" data-bs-trigger="hover"
+                            data-bs-placement="top" data-bs-title="Utilidad Percibida"
+                            data-bs-content="Mide la percepción sobre la utilidad de la aplicación para aprender y practicar yoga. Se puede calificar en base a si la aplicación contribuye con el bienestar y gestión del estrés.">
+                            <i class="fas fa-info-circle"></i>
+                        </a>
+                        Utilidad Percibida: <output id="output2">0</output>
+                    </label>
+                    <input name="get_Utilidad" type="range" class="form-range" min="0" max="5" step="0.5" value="0" id="rangeUtilidad"
+                        oninput="output2.value = rangeUtilidad.value" required>
                 </div>
+
                 <div class="col-md-4">
-                    <label for="range4" class="form-label">Satisfacción General: <output id="output4">0</output></label>
-                    <input type="range" class="form-range" min="0" max="5" step="0.5" value="0" id="range4"
-                        oninput="output4.value = range4.value" required>
+                    <label for="rangeAceptacionTecnologica" class="form-label">
+                        <a tabindex="2" role="button" data-bs-toggle="popover" data-bs-trigger="hover"
+                            data-bs-placement="top" data-bs-title="Aceptación Tecnológica"
+                            data-bs-content="Evalúa la disposición a utilizar la aplicación para para rutinas de yoga. Se puede calificar en base a la disposición y comodidad al adoptar la tecnología para practicar yoga.">
+                            <i class="fas fa-info-circle"></i>
+                        </a>
+                        Aceptación Tecnológica: <output id="output3">0</output></label>
+                    <input name="get_AceptacionTecnologica" type="range" class="form-range" min="0" max="5" step="0.5" value="0"
+                        id="rangeAceptacionTecnologica" oninput="output3.value = rangeAceptacionTecnologica.value"
+                        required>
                 </div>
+
                 <div class="col-md-4">
-                    <label for="range5" class="form-label">Efectividad en la Gestión del Estrés: <output
-                            id="output5">0</output></label>
-                    <input type="range" class="form-range" min="0" max="5" step="0.5" value="0" id="range5"
-                        oninput="output5.value = range5.value" required>
+                    <label for="rangeMotivacion" class="form-label">
+                        <a tabindex="3" role="button" data-bs-toggle="popover" data-bs-trigger="hover"
+                            data-bs-placement="top" data-bs-title="Motivación para el Uso Continuo"
+                            data-bs-content="Evalúa la motivados para seguir utilizando la aplicación en el futuro. Se puede calificar en base al nivel de interés en continuar practicando yoga con la aplicación.">
+                            <i class="fas fa-info-circle"></i>
+                        </a>
+                        Motivación para el Uso Continuo: <output id="output6">0</output></label>
+                    <input name="get_Motivacion" type="range" class="form-range" min="0" max="5" step="0.5" value="0" id="rangeMotivacion"
+                        oninput="output6.value = rangeMotivacion.value" required>
                 </div>
+
                 <div class="col-md-4">
-                    <label for="range6" class="form-label">Motivación para el Uso Continuo: <output
-                            id="output6">0</output></label>
-                    <input type="range" class="form-range" min="0" max="5" step="0.5" value="0" id="range6"
-                        oninput="output6.value = range6.value" required>
+                    <label for="rangeEfectividad" class="form-label">
+                        <a tabindex="4" role="button" data-bs-toggle="popover" data-bs-trigger="hover"
+                            data-bs-placement="top" data-bs-title="Efectividad en la Gestión del Estrés"
+                            data-bs-content="Mide la efectividad de la aplicación como herramienta de apoyo para la gestionar el estrés. Se puede calificar en base a si encuentra útiles las rutinas de yoga para relajarse.">
+                            <i class="fas fa-info-circle"></i>
+                        </a>
+                        Efectividad en la Gestión del Estrés: <output id="output5">0</output></label>
+                    <input name="get_Efectividad" type="range" class="form-range" min="0" max="5" step="0.5" value="0" id="rangeEfectividad"
+                        oninput="output5.value = rangeEfectividad.value" required>
                 </div>
+
+                <div class="col-md-4">
+                    <label for="rangeSatisfaccion" class="form-label">
+                        <a tabindex="5" role="button" data-bs-toggle="popover" data-bs-trigger="hover"
+                            data-bs-placement="top" data-bs-title="Satisfacción General"
+                            data-bs-content="Calificar la satisfacción general con la aplicación. Esto abarca la experiencia completa, desde la interfaz gráfica hasta el contenido y los beneficios percibidos.">
+                            <i class="fas fa-info-circle"></i>
+                        </a>
+                        Satisfacción General: <output id="output4">0</output></label>
+                    <input name="get_Satisfaccion" type="range" class="form-range" min="0" max="5" step="0.5" value="0" id="rangeSatisfaccion"
+                        oninput="output4.value = rangeSatisfaccion.value" required>
+                </div>
+
                 <div class="col-md-12">
-                    <label for="exampleTextarea" class="form-label">Comentarios adicionales:
+                    <label for="texComentarios" class="form-label">Comentarios adicionales:
                         <span>(Opcional)</span></label>
-                    <textarea class="form-control" id="exampleTextarea" rows="2"></textarea>
+                    <textarea name="get_comentarios" class="form-control" id="texComentarios" rows="2"></textarea>
                 </div>
+
                 <div class="d-grid gap-2 col-md-12">
-                    <button type="submit" class="btn btn-primary btn-block">Guardar</button>
+                    <button type="submit" class="btn btn-primary btn-block">FINALIZAR</button>
                 </div>
             </div>
         </div>
     </div>
 </form>
 
+
+<script type="text/javascript">
+    var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+    var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+        return new bootstrap.Popover(popoverTriggerEl)
+    })
+
+</script>
 
 {% endblock %}
