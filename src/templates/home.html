@@ -1,30 +1,6 @@
-{% extends "/plantillas/layout.html" %}
+{% extends "/plantillas/nav.html" %}
 
 {% block content %}
-
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="/">
-      <img src="{{ url_for('static', filename='images/unl.png') }}" alt="logo" width="100" height="30"
-        class="d-inline-block align-text-top">
-      Yoga
-    </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ml-auto">
-        <li class="nav-item">
-          <a class="nav-link" href="{{ url_for('seleccionar') }}">Practicar Yoga</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="">Gestionar</a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
 
 <div class="card m-4">
   <div class="card-body">
