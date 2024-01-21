@@ -188,8 +188,12 @@ def inicializar_modelo():
         nn.Linear(256, 9)
     )
 
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    modelo_path = os.path.join(script_dir, '..', 'models', 'DN121_v2.pth')
+    print("UBICACION MODELO ", modelo_path)
     modelo_yoga = modelo_yoga.to(device)
-    modelo_yoga.load_state_dict(torch.load('src/models/DN121_v2.pth'))
+    
+    modelo_yoga.load_state_dict(torch.load(modelo_path))
     modelo_yoga.eval()
 
     return modelo_yoga
