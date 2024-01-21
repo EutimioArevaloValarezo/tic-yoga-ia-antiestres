@@ -7,6 +7,7 @@ cffi==1.16.0
 charset-normalizer==3.3.2
 click==8.1.7
 contourpy==1.2.0
+cryptography==41.0.7
 cycler==0.12.1
 dnspython==2.4.2
 filelock==3.13.1
@@ -41,6 +42,7 @@ nvidia-nvtx-cu12==12.1.105
 opencv-contrib-python==4.9.0.80
 opencv-python==4.9.0.80
 packaging==23.2
+passlib==1.7.4
 pillow==10.2.0
 protobuf==3.20.3
 pycparser==2.21
@@ -51,6 +53,7 @@ python-decouple==3.8
 python-dotenv==1.0.0
 python-engineio==4.8.2
 python-socketio==5.11.0
+pytz==2023.3.post1
 requests==2.31.0
 simple-websocket==1.0.0
 six==1.16.0

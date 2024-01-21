@@ -131,16 +131,43 @@ def iniciar_sesion_usuario():
         return jsonify(administrador), 200
     else:
         return jsonify({ "error": "Credenciales incorrectas" }), 401
+    
+@app.route('/editar_administrador', methods=['POST'])
+def editar_administrador():
+    switch = request.form.get('get_switch')
+    nombre = request.form.get('get_nombre')
+    apellido = request.form.get('get_apellido')
+    usuario = request.form.get('get_usuario')
+    user = session.get('user', None)
+
+    db['administrador'].update_one({'_id': user['_id']}, {'$set': {'nombre': nombre, 'apellido': apellido, 'usuario': usuario}})
+
+    if(switch):
+        pass_actual = request.form.get('get_contrasenia_actual')
+        pass_nueva = request.form.get('get_contrasenia_nueva')
+        if pbkdf2_sha256.verify(pass_actual, user['contrasenia']):
+            pass_nueva = pbkdf2_sha256.encrypt(pass_nueva)
+            db['administrador'].update_one({'_id': user['_id']}, {'$set': {'contrasenia': pass_nueva}})
+        else:
+            return jsonify({ 'error': 'Error' })
+
+    return redirect('/admin/editar_usuario')
 
 @app.route('/cerrar_sesion_usuario')
 def cerrar_sesion_usuario():
     session.clear()
     return redirect('/')
 
-@app.route('/admin/gestionar_usuario')
+@app.route('/admin/editar_usuario')
 @requerir_logeo
-def gestionar_usuario():
-    return render_template('admin/gestionar_usuario.html')
+def editar_usuario():
+    return render_template('admin/editar_usuario.html')
+
+@app.route('/admin/gestionar_administradores')
+@requerir_logeo
+def gestionar_administradores():
+    administradores = db['administrador'].find()
+    return render_template('admin/gestionar_administradores.html', administradores=administradores)
 
 @app.route('/admin/ver_sesiones')
 @requerir_logeo
