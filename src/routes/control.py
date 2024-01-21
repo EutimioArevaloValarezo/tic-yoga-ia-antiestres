@@ -187,9 +187,12 @@ def inicializar_modelo():
         nn.ReLU(),
         nn.Linear(256, 9)
     )
-
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    modelo_path = os.path.join(script_dir, '..', 'models', 'DN121_v2.pth')
+    if config('VAR_STATUS') == 'development':
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        modelo_path = os.path.join(script_dir, '..', 'models', 'DN121_v2.pth')
+    else:
+        modelo_path = '/opt/render/project/src/src/models/DN121_v2.pth'
+    
     print("UBICACION MODELO ", modelo_path)
     modelo_yoga = modelo_yoga.to(device)
     
