@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<script src="{{ url_for('static', filename='js/cargar_facultad.js') }}"></script>
+
 
 <form action="/guardar_sesion" method="post">
     <div class="d-flex justify-content-center card mt-5 w-75 mx-auto">
@@ -151,12 +151,12 @@
                 <div class="col-md-4">
                     <label for="rangeSatisfaccion" class="form-label">
                         <a tabindex="5" role="button" data-bs-toggle="popover" data-bs-trigger="hover"
-                            data-bs-placement="top" data-bs-title="Satisfacción General"
-                            data-bs-content="Calificar la satisfacción general con la aplicación. Esto abarca la experiencia completa, desde la interfaz gráfica hasta el contenido y los beneficios percibidos.">
+                            data-bs-placement="top" data-bs-title="Calidad del Contenido"
+                            data-bs-content="Evalúa la calidad del contenido de las rutinas de yoga. Se puede calificar en base a si encuentra útiles las instrucciones, si les resulta fácil seguir las posturas y si el contenido es variado e interesante.">
                             <i class="fas fa-info-circle"></i>
                         </a>
-                        Satisfacción General: <output id="output4">0</output></label>
-                    <input name="get_Satisfaccion" type="range" class="form-range" min="0" max="5" step="0.5" value="0" id="rangeSatisfaccion"
+                        Calidad del Contenido: <output id="output4">0</output></label>
+                    <input name="get_calidadContenido" type="range" class="form-range" min="0" max="5" step="0.5" value="0" id="rangeSatisfaccion"
                         oninput="output4.value = rangeSatisfaccion.value" required>
                 </div>
 
@@ -174,6 +174,7 @@
     </div>
 </form>
 
+<script src="{{ url_for('static', filename='js/cargar_facultad.js') }}"></script>
 
 <script type="text/javascript">
     var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))

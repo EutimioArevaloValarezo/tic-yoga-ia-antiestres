@@ -1,6 +1,6 @@
 $("form[name=form_iniciar_sesion]").submit(function(e){
     var $form = $(this);
-    var $error = $form.find(".error");
+    var $error = $form.find(".alert");
     var data = $form.serialize();
 
     $.ajax({
@@ -13,7 +13,7 @@ $("form[name=form_iniciar_sesion]").submit(function(e){
         },
         error: function(resp) {
             console.log(resp);
-            // $error.text(resp.responseJSON.error).removeClass("error--hidden");
+            $error.removeClass("visually-hidden");
         }
 
     });

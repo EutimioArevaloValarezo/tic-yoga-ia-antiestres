@@ -35,12 +35,15 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('gestionar_usuario') }}">Gestionar perfiles</a>
+              <a class="nav-link" href="{{ url_for('gestionar_usuario') }}">Gestionar administradores</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="">Visualizar sesiones</a>
+              <a class="nav-link" href="{{ url_for('ver_sesiones') }}">Visualizar sesiones</a>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('ver_estadistica') }}">estadistica</a>
+            </li> -->
+            <li class="nav-item d-flex">
               <a class="nav-link" href="{{ url_for('cerrar_sesion_usuario') }}">Cerrar Sesión</a>
             </li>
           </ul>

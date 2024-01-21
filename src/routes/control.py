@@ -3,6 +3,11 @@ import torch.nn as nn
 import torchvision.models as models
 import torchvision.transforms as transforms
 
+import matplotlib.pyplot as plt
+import numpy as np
+import os
+
+import uuid
 import cv2
 import time
 import pytz
@@ -10,9 +15,119 @@ import datetime
 import bson
 import mediapipe as mp
 
-from flask import session
+from cryptography.fernet import Fernet
+from passlib.hash import pbkdf2_sha256
+from decouple import config
 from PIL import Image
 from db import db
+
+
+
+key = b'E5bsJkAn2CYlsdDZepGyi69SHnCT77GQw8EUOiCTUO4='
+cipher_suite = Fernet(key)
+
+def generar_grafico_estadisticas(data):
+    estadisticas = {
+        "Facilidad de Uso": data['facilidad_uso'],
+        "Utilidad Percibida": data['utilidad'],
+        "Aceptación Tecnológica": data['aceptacion_tecnologica'],
+        "Motivación para el Uso Continuo": data['motivacion'],
+        "Efectividad en la Gestión del Estrés": data['efectividad'],
+        "Calidad del Contenido": data['calidad'],
+        "Satisfacción General": data['satisfaccion']
+    }
+ 
+    # Colores para las calificaciones
+    colores = {
+        "Excelente": "green",
+        "Bueno": "yellow",
+        "Aceptable": "orange",
+        "Malo": "red"
+    }
+
+    # Función para asignar colores
+    def asignar_color(valor):
+        if valor >= 4:
+            return colores["Excelente"]
+        elif valor >= 3:
+            return colores["Bueno"]
+        elif valor >= 2:
+            return colores["Aceptable"]
+        else:
+            return colores["Malo"]
+
+    # Crear gráfico de barras
+    fig = plt.figure(figsize=(10, 6))
+    for i, (categoria, valor) in enumerate(estadisticas.items()):
+        plt.barh(categoria, valor, color=asignar_color(valor))
+    plt.xlabel('Valor')
+    plt.title('Estadísticas')
+    plt.grid(True)
+
+    # Guardar el gráfico en un archivo
+    plt.savefig('src/static/images/estadistica/grafico.png')
+
+    # Cerrar la figura
+    plt.close(fig)
+
+    return True
+
+def get_usuario(usuario):
+    usuario = db['administrador'].find_one({"usuario":usuario})
+    return usuario
+
+def insert_usuario(data):
+    data['contrasenia'] = pbkdf2_sha256.encrypt(data['contrasenia'])
+    db['administrador'].insert_one(data)
+
+def get_sesiones():
+    sesion = list(db['sesion'].find())
+    for s in sesion:
+        s['persona']['nombre'] = cipher_suite.decrypt(s['persona']['nombre']).decode()
+        s['persona']['apellido'] = cipher_suite.decrypt(s['persona']['apellido']).decode()
+        s['persona']['cedula'] = cipher_suite.decrypt(s['persona']['cedula']).decode()
+        s['persona']['email'] = cipher_suite.decrypt(s['persona']['email']).decode()
+        s['persona']['telefono'] = cipher_suite.decrypt(s['persona']['telefono']).decode()
+
+    return sesion
+
+def insert_sesion(datos):
+    facilidad_uso = float(datos['get_FacilidadUso'])
+    utilidad= float(datos['get_Utilidad'])
+    aceptacion_tecnologica = float(datos['get_AceptacionTecnologica'])
+    motivacion = float(datos['get_Motivacion'])
+    efectividad = float(datos['get_Efectividad'])
+    calidad = float(datos['get_calidadContenido'])
+    satisfaccion = (facilidad_uso + utilidad + aceptacion_tecnologica + motivacion + efectividad + calidad)/6
+    satisfaccion = round(satisfaccion, 1)
+    sesion = {
+        "_id": uuid.uuid4().hex,
+        "persona": {
+            "nombre": cipher_suite.encrypt(str(datos['get_nombre']).encode()),
+            "apellido": cipher_suite.encrypt(str(datos['get_apellido']).encode()),
+            "cedula": cipher_suite.encrypt(str(datos['get_cedula']).encode()),
+            "email": cipher_suite.encrypt(str(datos['get_email']).encode()),
+            "telefono": cipher_suite.encrypt(str(datos['get_telefono']).encode()),
+        },
+        "carrera":datos['get_carrera'],
+        "fecha":datos['get_fecha'],
+        "hora_inicio":datos['get_tiempoInicio'],
+        "hora_fin":datos['get_tiempoFin'],
+        "duracion":datos['get_duracion'],
+        "estadisticas": {
+            "facilidad_uso": facilidad_uso,
+            "utilidad": utilidad,
+            "aceptacion_tecnologica": aceptacion_tecnologica,
+            "motivacion": motivacion,
+            "efectividad": efectividad,
+            "calidad": calidad,
+            "satisfaccion": satisfaccion,
+            "comentarios": datos['get_comentarios']
+        },
+        "observacion":""
+    }
+
+    db['sesion'].insert_one(sesion)
 
 def get_duracion_fecha(inicio, fin):
     duracion = fin - inicio

@@ -57,8 +57,8 @@ var data = {
             ]
         },
         {
-            "nombre": "Facultad Jurídica, Social y Administrativa",
-            "acronimo": "FJSA",
+            "nombre": "Facultad de la Salud Humana",
+            "acronimo": "FSH",
             "carreras": [
                 "Enfermería",
                 "Laboratorio Clínico",
@@ -89,24 +89,34 @@ var data = {
 // Cargar las facultades al cargar la página
 window.onload = function () {
     var selectFacultad = document.getElementById("inputFacultad");
+    
     for (var i = 0; i < data.facultades.length; i++) {
         var opt = document.createElement('option');
         opt.value = data.facultades[i].nombre;
         opt.innerHTML = data.facultades[i].nombre;
         selectFacultad.appendChild(opt);
     }
-    cargarCarreras(0); // Cargar las carreras de la primera facultad
+
+    // Load the careers of the first faculty
+    cargarCarreras(data.facultades[0].nombre);
 }
 
 // Función para cargar las carreras cuando se selecciona una facultad
-function cargarCarreras(indexFacultad) {
-    var selectCarrera = document.getElementById("inputCarrera");
-    selectCarrera.innerHTML = ""; // Limpiar las carreras anteriores
-    for (var i = 0; i < data.facultades[indexFacultad].carreras.length; i++) {
-        var opt = document.createElement('option');
-        opt.value = data.facultades[indexFacultad].carreras[i];
-        opt.innerHTML = data.facultades[indexFacultad].carreras[i];
-        selectCarrera.appendChild(opt);
+function cargarCarreras(selectedFacultadName) {
+    var indexFacultad = data.facultades.findIndex(facultad => facultad.nombre === selectedFacultadName);
+
+    if (indexFacultad !== -1) {
+        var selectCarrera = document.getElementById("inputCarrera");
+        selectCarrera.innerHTML = ""; // Limpiar las carreras anteriores
+
+        for (var i = 0; i < data.facultades[indexFacultad].carreras.length; i++) {
+            var opt = document.createElement('option');
+            opt.value = data.facultades[indexFacultad].carreras[i];
+            opt.innerHTML = data.facultades[indexFacultad].carreras[i];
+            selectCarrera.appendChild(opt);
+        }
+    } else {
+        console.error("Facultad not found:", selectedFacultadName);
     }
 }
 

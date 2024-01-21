@@ -1,0 +1,121 @@
+{% extends "/plantillas/nav.html" %}
+
+{% block content %}
+
+<div class="overflow-auto">
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <table class="table table-sm text-center">
+                    <thead>
+                        <tr>
+                            <th scope="col">Fecha</th>
+                            <th scope="col">Hora de Inicio</th>
+                            <th scope="col">Hora de Finalización</th>
+                            <th scope="col">Duración de la rutina</th>
+                            <th scope="col">Estudiante</th>
+                            <th scope="col">Cedula</th>
+                            <th scope="col">Carrera</th>
+                            <th scope="col">Satisfaccion</th>
+                            <th scope="col">Observaciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for sesion in sesiones %}
+                        <tr>
+
+                            <td>
+                                {{ sesion['fecha'] }}
+                            </td>
+                            <td>
+                                {{ sesion['hora_inicio'] }}
+                            </td>
+                            <td>
+                                {{ sesion['hora_fin'] }}
+                            </td>
+                            <td>
+                                {{ sesion['duracion'] }}
+                            </td>
+                            <td>
+                                {{ sesion['persona']['nombre'] +" "+sesion['persona']['apellido'] }}
+                            </td>
+                            <td>
+                                {{ sesion['persona']['cedula'] }}
+                            </td>
+                            <td>
+                                {{ sesion['carrera']}}
+                            </td>
+                            <td>
+                                <!-- <input id="id_estadistica" type="hidden" value="{{ sesion['_id'] }}"> -->
+                                <button type="button" class="btn btn-info" data-bs-toggle="modal"
+                                    data-bs-target="#estadisticaModal" data-id="{{ sesion['_id'] }}"><i
+                                        class="fas fa-chart-bar"></i>
+                                </button>
+                            </td>
+                            <td class="text-center">
+                                <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                                    data-bs-target="#observacionModal" data-id="{{ sesion['_id'] }}"><i
+                                        class="fas fa-eye"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade modal-xl" id="estadisticaModal" tabindex="-1" aria-labelledby="estadisticaLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-3" id="estadisticaLabel">Visualizar estadistica</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <img id="estadisticaGrafica" class="img-fluid rounded-start w-100" style="object-fit: contain;"
+                    alt="estadistica">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade modal-lg" id="observacionModal" tabindex="-1" aria-labelledby="observacionLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-3" id="observacionLabel">Observaciones</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form name="observacionFrom">
+                <div class="modal-body">
+                    <input type="hidden" id="hiddenId" name="idObservacion">
+                    <div id="alert_obs" class="alert alert-dismissible alert-success visually-hidden">
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        <strong>Listo!!</strong> Se ha guardado correctamente.
+                    </div>
+                    <div class="form-group">
+                        <textarea name="nameObsTextArea" class="form-control" id="idObsTextarea" rows="4"></textarea>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/sesiones.js') }}"></script>
+
+{% endblock %}

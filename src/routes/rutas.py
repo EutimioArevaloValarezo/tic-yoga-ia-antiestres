@@ -9,9 +9,7 @@ from app import app
 from db import db
 from passlib.hash import pbkdf2_sha256
 
-from routes.usuario import insert_usuario, get_usuario
-from routes.sesion import insert_sesion
-from routes.control import get_posturas_rutina, get_calibracion_rutina, get_lista_posturas, get_index_posturas, inicializar_modelo, get_duracion_fecha
+from routes.control import inicializar_modelo, get_lista_posturas, get_index_posturas, get_calibracion_rutina, get_posturas_rutina, get_duracion_fecha, insert_sesion,insert_usuario, get_usuario, get_sesiones, generar_grafico_estadisticas
 
 app_socket = SocketIO(app)
 app.secret_key = str(config('KEY_SESSION'))
@@ -69,7 +67,6 @@ def calibrar_posicion():
 def rutina():
     session['iniciar_rutina'] = time.time()
     return render_template('rutina.html')
-
         
 @app.route('/practicar_rutina')
 def practicar_rutina():
@@ -98,7 +95,7 @@ def guardar_sesion():
         'get_nombre', 'get_apellido', 'get_cedula', 'get_email', 'get_telefono',
         'get_facultad', 'get_carrera', 'get_FacilidadUso', 'get_Utilidad',
         'get_AceptacionTecnologica', 'get_Motivacion', 'get_Efectividad',
-        'get_Satisfaccion', 'get_comentarios'
+        'get_calidadContenido', 'get_comentarios'
     ]
     datos = {campo: request.form.get(campo) for campo in campos}
     insert_sesion(datos)
@@ -145,11 +142,49 @@ def cerrar_sesion_usuario():
 def gestionar_usuario():
     return render_template('admin/gestionar_usuario.html')
 
+@app.route('/admin/ver_sesiones')
+@requerir_logeo
+def ver_sesiones():
+    sesiones = get_sesiones()
+    return render_template('admin/ver_sesiones.html', sesiones=sesiones)
 
-@app.errorhandler(404)
-def not_found_error(error):
-    return render_template('error/500.html'), 404
 
-@app.errorhandler(500)
-def internal_error(error):
-    return render_template('error/500.html'), 500
+@app.route('/get_observacion', methods=['POST'])
+def get_observacion():
+    idObservacion = request.form.get('idObservacion')
+    resultado = db['sesion'].find_one({'_id': idObservacion})
+    if resultado:
+        return jsonify({'text_observacion': resultado['observacion']})
+    else:
+        return jsonify({ 'error': 'Error grave' })
+    
+@app.route('/editar_observacion', methods=['POST'])
+def editar_observacion():
+    idObservacion = request.form.get('idObservacion')
+    observacion = request.form.get('nameObsTextArea')
+    resultado = db['sesion'].update_one({'_id': idObservacion}, {'$set': {'observacion': observacion}})
+    if observacion:
+        return jsonify({'success': 'Se guardo correctamente'})
+    else:
+        return jsonify({ 'error': 'Error grave' })
+
+@app.route('/ver_estadistica')
+def ver_estadistica():
+    return render_template('admin/estadistica.html')
+
+@app.route('/generar_estaditica', methods=['POST'])
+def generar_estaditica():
+    id_pymongo = request.form.get('id_pymongo')
+    resultado = db['sesion'].find_one({'_id': id_pymongo})
+    if generar_grafico_estadisticas(resultado['estadisticas']):
+        return jsonify({'ruta_imagen': '../static/images/estadistica/grafico.png'})
+    else:
+        return jsonify({ 'error': 'Error grave' })
+
+# @app.errorhandler(404)
+# def not_found_error(error):
+#     return render_template('error/500.html'), 404
+
+# @app.errorhandler(500)
+# def internal_error(error):
+#     return render_template('error/500.html'), 500
