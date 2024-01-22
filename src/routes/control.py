@@ -190,13 +190,13 @@ def inicializar_modelo():
     if config('VAR_STATUS') == 'development':
         script_dir = os.path.dirname(os.path.abspath(__file__))
         modelo_path = os.path.join(script_dir, '..', 'models', 'DN121_v2.pth')
+        modelo_yoga = modelo_yoga.to(device)
+        modelo_yoga.load_state_dict(torch.load(modelo_path))
     else:
         modelo_path = '/opt/render/project/src/src/models/DN121_v2.pth'
+        modelo_yoga = modelo_yoga.to(device)
+        modelo_yoga.load_state_dict(torch.load(modelo_path, map_location=torch.device('cpu')))
     
-    print("UBICACION MODELO ", modelo_path)
-    modelo_yoga = modelo_yoga.to(device)
-    
-    modelo_yoga.load_state_dict(torch.load(modelo_path))
     modelo_yoga.eval()
 
     return modelo_yoga
