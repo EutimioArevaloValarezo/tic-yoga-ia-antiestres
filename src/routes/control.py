@@ -23,7 +23,7 @@ from db import db
 
 
 
-key = b'E5bsJkAn2CYlsdDZepGyi69SHnCT77GQw8EUOiCTUO4='
+key = str(config('KEY_FERNET')).encode()
 cipher_suite = Fernet(key)
 
 def generar_grafico_estadisticas(data):

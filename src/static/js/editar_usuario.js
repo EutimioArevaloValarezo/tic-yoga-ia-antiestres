@@ -37,3 +37,32 @@ $(document).ready(function () {
     });
 });
 
+$("form[name=form_editar_usuario]").submit(function(e){
+    var $form = $(this);
+    var $alert = $form.find(".alert");
+    var data = $form.serialize();
+
+    $.ajax({
+        url: "/editar_administrador",
+        type: "POST",
+        data: data,
+        dataType: "json",
+        success:function (resp) {
+            console.log("SUCCESS: ", resp.success)
+            $('#alertaTitulo').text('Listo!! ');
+            $('#alertaCuerpo').text(resp.success);
+            $alert.addClass("alert-success").removeClass("visually-hidden");
+            window.location.href = '/admin/editar_usuario'
+        },
+        error: function(resp) {
+            console.log("ERROR: ", resp);
+            $('#alertaTitulo').text('Error ');
+            $('#alertaCuerpo').text(resp.responseJSON.error);
+            $alert.addClass("alert-danger").removeClass("visually-hidden");
+        }
+
+    });
+
+    e.preventDefault();
+})
+

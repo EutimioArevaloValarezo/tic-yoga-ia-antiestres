@@ -1,5 +1,3 @@
-
-
 {% extends "/plantillas/nav.html" %}
 
 {% block content %}
@@ -18,12 +16,17 @@
                             <th scope="col">Usuario</th>
                             <th scope="col">Resetear contraseña</th>
                             <th scope="col">Eliminar administrador</th>
+                            <th scope="col">
+                                <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                                    data-bs-target="#modalAgregarAdmin"><i class="fa fa-plus"></i>
+                                </button>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for administrador in administradores %}
                         <tr>
-                
+
                             <td>
                                 {{ administrador['nombre'] }}
                             </td>
@@ -35,13 +38,13 @@
                             </td>
                             <td>
                                 <button type="button" class="btn btn-info" data-bs-toggle="modal"
-                                    data-bs-target="#estadisticaModal" data-id="{{ administrador['_id'] }}"><i
+                                    data-bs-target="#resetearContrasenia" data-id="{{ administrador['_id'] }}"><i
                                         class="fa fa-refresh"></i>
                                 </button>
                             </td>
                             <td class="text-center">
                                 <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                                    data-bs-target="#observacionModal" data-id="{{ administrador['_id'] }}"><i
+                                    data-bs-target="#eliminarAdministrador" data-id="{{ administrador['_id'] }}"><i
                                         class="fas fa-trash-alt"></i>
                                 </button>
                             </td>
@@ -54,6 +57,99 @@
     </div>
 </div>
 
-<script src="{{ url_for('static', filename='js/editar_usuario.js') }}"></script>
+<div class="modal fade modal-lg" id="modalAgregarAdmin" tabindex="-1" aria-labelledby="agregarAdminLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-3" id="agregarAdminLabel">Agregar Administrador</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form class="m-2" name="agregar_administrador">
+
+                <div class="modal-body">
+                    <input type="hidden" id="id_res_usuario" name="name_resetear_pass">
+                    <div class="modal-body">
+                        <div class="alert alert-dismissible alert-danger visually-hidden">
+
+                        </div>
+                        <div class="form-group mt-2">
+                            <label for="id_nombre" class="form-label">Nombre: </label>
+                            <input id="id_nombre" type="text" name="get_nombre" placeholder="Nombre"
+                                class="form-control">
+                        </div>
+                        <div class="form-group mt-2">
+                            <label for="id_apellido" class="form-label">Apellido: </label>
+                            <input id="id_apellido" type="text" name="get_apellido" placeholder="Apellido"
+                                class="form-control">
+                        </div>
+                        <div class="form-group mt-2">
+                            <label for="id_usuario" class="form-label">Usuario: </label>
+                            <input id="id_usuario" type="text" name="get_usuario" placeholder="Usuario"
+                                class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-success">Agregar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="resetearContrasenia" tabindex="-1" aria-labelledby="resetearLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-3" id="resetearLabel">Resetear contraseña</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="/resetear_contrasenia_administrador" method="post">
+                <div class="modal-body">
+                    <input type="hidden" id="id_res_usuario" name="name_resetear_pass">
+                    <div class="modal-body fs-3">
+                        Desea resetear la contraseña de: <strong>
+                            <p id="res_usuario"></p>
+                        </strong>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-info">Confirmar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="eliminarAdministrador" tabindex="-1" aria-labelledby="eliminarLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-3" id="eliminarLabel">Resetear contraseña</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="/eliminar_administrador" method="post">
+                <div class="modal-body">
+                    <input type="hidden" id="id_del_usuario" name="name_eliminar_admin">
+                    <div class="modal-body fs-3">
+                        Se eliminará permanentemente a : <strong>
+                            <p id="del_usuario"></p>
+                        </strong>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-danger">Confirmar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script src="{{ url_for('static', filename='js/administradores.js') }}"></script>
 
 {% endblock %}

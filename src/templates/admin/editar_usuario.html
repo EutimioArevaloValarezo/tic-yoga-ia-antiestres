@@ -11,7 +11,11 @@
                     <h2>Editar Administrador</h2>
                 </div>
                 <div class="card-body">
-                    <form action="/editar_administrador" method="post">
+                    <form name="form_editar_usuario">
+                        <div class="alert alert-dismissible visually-hidden">
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            <strong id="alertaTitulo"></strong> <p id="alertaCuerpo"></p>
+                        </div>
                         <div class="form-group mt-2">
                             <label for="id_nombre" class="form-label">Nombre: </label>
                             <input id="id_nombre" type="text" name="get_nombre" placeholder="Nombre"
@@ -64,6 +68,7 @@
         </div>
     </div>
 </div>
+
 
 <script src="{{ url_for('static', filename='js/editar_usuario.js') }}"></script>
 

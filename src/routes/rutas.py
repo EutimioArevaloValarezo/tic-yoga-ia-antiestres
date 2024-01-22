@@ -12,8 +12,7 @@ from passlib.hash import pbkdf2_sha256
 from routes.control import inicializar_modelo, get_lista_posturas, get_index_posturas, get_calibracion_rutina, get_posturas_rutina, get_duracion_fecha, insert_sesion,insert_usuario, get_usuario, get_sesiones, generar_grafico_estadisticas
 
 app_socket = SocketIO(app)
-app.secret_key = str(config('KEY_SESSION'))
-
+app.secret_key = str(config('KEY_SESSION')).encode()
 modelo_yoga = inicializar_modelo()
 
 def requerir_logeo(f):
@@ -29,7 +28,6 @@ def requerir_logeo(f):
 @app.route('/')
 def home():
     iniciar_rutina = session.get('logeado', None)
-    print(iniciar_rutina)
     if iniciar_rutina is None:
         session.clear()
     return render_template('home.html')
@@ -99,7 +97,6 @@ def guardar_sesion():
     ]
     datos = {campo: request.form.get(campo) for campo in campos}
     insert_sesion(datos)
-    # print(datos)
     return redirect(url_for('home'))
 
     
@@ -108,13 +105,13 @@ def iniciar_sesion():
     usuario = db['administrador']
     # Verificar si la colección está vacía
     if usuario.count_documents({}) == 0:
-        # print("La colección está vacía")
+
         data = {
-            "_id": uuid.uuid4().hex,
-            "nombre": "Eutimio",
-            "apellido": "Arévalo",
-            "usuario":config('INIT_USUARIO'),
-            "contrasenia":config('INIT_PASSWORD')
+            '_id': uuid.uuid4().hex,
+            'nombre': 'Eutimio',
+            'apellido': 'Arévalo',
+            'usuario':config('INIT_USUARIO'),
+            'contrasenia':config('INIT_PASS')
         }
         insert_usuario(data)
     return render_template('admin/login.html')
@@ -130,7 +127,7 @@ def iniciar_sesion_usuario():
         session['user'] = administrador
         return jsonify(administrador), 200
     else:
-        return jsonify({ "error": "Credenciales incorrectas" }), 401
+        return jsonify({ 'error': 'Credenciales incorrectas' }), 401
     
 @app.route('/editar_administrador', methods=['POST'])
 def editar_administrador():
@@ -140,18 +137,20 @@ def editar_administrador():
     usuario = request.form.get('get_usuario')
     user = session.get('user', None)
 
-    db['administrador'].update_one({'_id': user['_id']}, {'$set': {'nombre': nombre, 'apellido': apellido, 'usuario': usuario}})
-
     if(switch):
         pass_actual = request.form.get('get_contrasenia_actual')
         pass_nueva = request.form.get('get_contrasenia_nueva')
         if pbkdf2_sha256.verify(pass_actual, user['contrasenia']):
             pass_nueva = pbkdf2_sha256.encrypt(pass_nueva)
             db['administrador'].update_one({'_id': user['_id']}, {'$set': {'contrasenia': pass_nueva}})
+            return jsonify({ 'success': 'Se ha actualizado los datos y la contraseña correctamente' }), 200
         else:
-            return jsonify({ 'error': 'Error' })
-
-    return redirect('/admin/editar_usuario')
+            return jsonify({ 'error': 'No se ha podido actualizar la contraseña, verifica la información' }), 401
+    else:
+        res = db['administrador'].update_one({'_id': user['_id']}, {'$set': {'nombre': nombre, 'apellido': apellido, 'usuario': usuario}})
+        if res:
+            return jsonify({ 'success': 'Se han actualizado los datos correctamente' }), 200
+        return jsonify({ 'error': 'No se han podido actualizar los datos' }), 401
 
 @app.route('/cerrar_sesion_usuario')
 def cerrar_sesion_usuario():
@@ -168,6 +167,69 @@ def editar_usuario():
 def gestionar_administradores():
     administradores = db['administrador'].find()
     return render_template('admin/gestionar_administradores.html', administradores=administradores)
+
+@app.route('/get_administrador', methods=['POST'])
+def get_administrador():
+    id_admin = request.form.get('id_admin')
+    admin = db['administrador'].find_one({ '_id':id_admin })
+    if admin:
+        return jsonify({'usuario': admin['usuario']})
+    else:
+        return jsonify({ 'error': 'Error grave' })
+    
+@app.route('/agregar_administrador', methods=['POST'])
+def agregar_administrador():
+    nombre = request.form.get('get_nombre')
+    apellido = request.form.get('get_apellido')
+    usuario = request.form.get('get_usuario')
+    contrasenia = config('INIT_PASS')
+
+    administrador = {
+        "_id": uuid.uuid4().hex,
+        "nombre": nombre,
+        "apellido": apellido,
+        "usuario": usuario,
+        "contrasenia": pbkdf2_sha256.encrypt(contrasenia)
+    }
+
+    if db['administrador'].find_one({ 'usuario': usuario }):
+        return jsonify({ 'error': 'Ya existe un usuario con este nombre' }), 400
+    
+    if db['administrador'].insert_one(administrador):
+        return jsonify({'success': 'Se ha creado correctamente el usuario :'+str(usuario)}), 200
+
+    return jsonify({ 'error': 'Se produjo un error' }), 400
+
+@app.route('/eliminar_administrador', methods=['POST'])
+def eliminar_administrador():
+    id_admin = request.form.get('name_eliminar_admin')
+    admin = db['administrador'].find_one({ '_id':id_admin })
+    aux_admin = session.get('user', None)
+    if admin['usuario'] == aux_admin['usuario']:
+        session.clear()
+        db['administrador'].delete_one(admin)
+        return redirect('/')
+    
+    db['administrador'].delete_one(admin)
+
+    return redirect(url_for('gestionar_administradores'))
+    
+@app.route('/resetear_contrasenia_administrador', methods=['POST'])
+def resetear_contrasenia_administrador():
+    id_admin = request.form.get('name_resetear_pass')
+    admin = db['administrador'].find_one({ '_id':id_admin })
+    aux_admin = session.get('user', None)
+    new_contrasenia = config('INIT_PASS')
+    new_contrasenia = pbkdf2_sha256.encrypt(new_contrasenia)
+    if admin['usuario'] == aux_admin['usuario']:
+        db['administrador'].update_one({'_id': admin['_id']}, {'$set': {'contrasenia': new_contrasenia}})
+        admin = db['administrador'].find_one({ '_id': aux_admin['_id'] })
+        session['user'] = admin
+        return redirect(url_for('gestionar_administradores'))
+
+    db['administrador'].update_one({'_id': admin['_id']}, {'$set': {'contrasenia': new_contrasenia}})
+    return redirect(url_for('gestionar_administradores'))
+
 
 @app.route('/admin/ver_sesiones')
 @requerir_logeo
