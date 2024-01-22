@@ -6,49 +6,39 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="{{ url_for('static', filename='js/socket.js') }}"></script>
 
-<div class="containe d-flex justify-content-center card mt-5 w-75 mx-auto">
-  <div class="row">
-    <div class="col-md-6">
-      <img id="pose_image" class="img-fluid object-fit-fill h-100" alt="imagen">
-    </div>
-    <div class="col-md-6">
-      <div class="row">
-        <div class="col-md-12 d-flex justify-content-center">
-          <div class="progress blue">
-            <span class="progress-left">
-              <span class="progress-bar"></span>
-            </span>
-            <span class="progress-right">
-              <span class="progress-bar"></span>
-            </span>
-            <div class="progress-value" id="idPresicion">0%</div>
+<div class="d-flex justify-content-center card mt-2 w-100 mx-auto">
+  <div class="card-body">
+      <div class="row g-3">
+          <div class="col-md-12 card-text fs-3" style="text-align: justify;">
+              <h3 id="idPresicion" class="text-center" style="font-size: 150px;">0%</h3>
           </div>
-        </div>
-        <div class="col-md-12">
-          <img src="{{ url_for('practicar_rutina') }}" class="img-fluid object-fit-fill">
-        </div>
+          <div class="col-md-6">
+              <img id="pose_image" class="img-fluid rounded-start"
+                  style="height: 100%; width: 90%; object-fit: contain; display: block; margin-left: auto; margin-right: auto;"
+                  alt="postura">
+          </div>
+          <div class="col-md-6">
 
+              <img src="{{ url_for('practicar_rutina') }}" class="img-fluid rounded-start"
+                  style="height: 100%; width: 90%; object-fit: contain; ">
+          </div>
       </div>
-    </div>
 
   </div>
 </div>
 
 <!--MODAL-->
 
-<div class="modal fade" id="my-modal" tabindex="-1" role="dialog" aria-labelledby="my-modal-title" aria-hidden="true">
+<div class="modal fade modal-xl" id="my-modal" tabindex="-1" role="dialog" aria-labelledby="my-modal-title" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="my-modal-title">Título del modal</h5>
+        <h5 class="modal-title" id="my-modal-title">Respiracion</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
       </div>
-      <div class="modal-body">
-        <h1>TIPO</h1>
-        <h2 id="idTiempoRespiracion"></h2>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
+      <div class="modal-body text-center">
+        <h1 style="font-size: 200px"></h1>
+        <h2 style="font-size: 400px" id="idTiempoRespiracion"></h2>
       </div>
     </div>
   </div>

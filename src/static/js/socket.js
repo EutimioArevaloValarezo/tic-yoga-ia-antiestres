@@ -1,10 +1,12 @@
 var socket = io();
 
-// Función para mostrar la cuenta regresiva y actualizar el título
 function cuentaRegresiva(tiempo, titulo) {
+    document.querySelector('h1').innerText = titulo;
+    var voice = new Audio('../static/voice/'+titulo+'.mp3');
+    voice.play()
     return new Promise((resolve, reject) => {
         let intervalo = setInterval(() => {
-            document.querySelector('h1').innerText = titulo;
+
             document.querySelector('h2').innerText = tiempo;
             tiempo--;
             if (tiempo < 0) {

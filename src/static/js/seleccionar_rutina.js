@@ -22,8 +22,9 @@ $(document).ready(function () {
                                 <div class="col-md-10">
                                     <div class="card-body">
                                         <h5 class="card-title">${postura.nombre}</h5>
-                                        <p class="card-text">${postura.descripcion}</p>
-                                        <p class="card-text"><small class="text-body-secondary">${postura.categoria}</small></p>
+                                        <strong>Intrucciones: </strong>${postura.descripcion}<br><br>
+                                        <strong>Beneficios: </strong>${postura.beneficios}<br><br>
+                                        <strong>Categoria: </strong><small class="text-body-secondary">${postura.categoria}</small>
                                     </div>
                                 </div>
                             </div>

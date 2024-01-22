@@ -219,7 +219,7 @@ def get_posturas_rutina(modelo_yoga, app_socket, index_posturas, repeticiones):
             img_processed = transform(img_pil).unsqueeze(0).to(device)
             current_time = time.time()
             # Verificar cada segundo
-            if current_time - last_prediction_time >= 1:
+            if current_time - last_prediction_time >= 2:
 
                 with torch.no_grad():
                     output = modelo_yoga(img_processed)
@@ -228,8 +228,8 @@ def get_posturas_rutina(modelo_yoga, app_socket, index_posturas, repeticiones):
                 # Calcula la precisión
                 precision = round(probabilities[index_posturas[index_posturas_cont]].item() * 100, 2)
                 if (index_posturas[index_posturas_cont] == 2):
-                    precision = precision * 5
-                if precision >= 10:
+                    precision = precision * 10
+                if precision >= 75:
                     
                     controlar_respiraciones(app_socket, index_posturas_cont, lista_respiraciones)
                     index_posturas_cont += 1
@@ -248,7 +248,7 @@ def get_posturas_rutina(modelo_yoga, app_socket, index_posturas, repeticiones):
                         app_socket.emit('pose_update', {'pose_index': index_posturas[index_posturas_cont]})
 
                 # Envia la precisión al cliente
-                app_socket.emit('precision_update', {'precision': precision})
+                app_socket.emit('precision_update', {'precision': round(precision*1.3, 2)})
 
                 # Actualiza el tiempo de la última predicción
                 last_prediction_time = current_time
