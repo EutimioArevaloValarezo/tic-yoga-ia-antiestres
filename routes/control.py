@@ -23,7 +23,7 @@ from db import db
 
 
 
-key = str(config('KEY_FERNET')).encode()
+key = 'E5bsJkAn2CYlsdDZepGyi69SHnCT77GQw8EUOiCTUO4='.encode()
 cipher_suite = Fernet(key)
 
 def generar_grafico_estadisticas(data):
@@ -65,7 +65,7 @@ def generar_grafico_estadisticas(data):
     plt.grid(True)
 
     # Guardar el gráfico en un archivo
-    plt.savefig('src/static/images/estadistica/grafico.png')
+    plt.savefig('./static/images/estadistica/grafico.png')
 
     # Cerrar la figura
     plt.close(fig)
@@ -187,15 +187,16 @@ def inicializar_modelo():
         nn.ReLU(),
         nn.Linear(256, 9)
     )
+
+    modelo_path = './models/DN121_v2.pth'
+
     if config('VAR_STATUS') == 'development':
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        modelo_path = os.path.join(script_dir, '..', 'models', 'DN121_v2.pth')
         modelo_yoga = modelo_yoga.to(device)
         modelo_yoga.load_state_dict(torch.load(modelo_path))
     else:
-        modelo_path = '/opt/render/project/src/src/models/DN121_v2.pth'
+        
         modelo_yoga = modelo_yoga.to(device)
-        modelo_yoga.load_state_dict(torch.load(modelo_path, map_location=torch.device('cpu')))
+        modelo_yoga.load_state_dict(torch.load(modelo_path, map_location=torch.device(device)))
     
     modelo_yoga.eval()
 

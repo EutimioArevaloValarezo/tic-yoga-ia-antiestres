@@ -12,7 +12,7 @@ from passlib.hash import pbkdf2_sha256
 from routes.control import inicializar_modelo, get_lista_posturas, get_index_posturas, get_calibracion_rutina, get_posturas_rutina, get_duracion_fecha, insert_sesion,insert_usuario, get_usuario, get_sesiones, generar_grafico_estadisticas
 
 app_socket = SocketIO(app)
-app.secret_key = str(config('KEY_SESSION')).encode()
+app.secret_key = '\xe9h\xa2z\xe5\xec\xcc\xcb\xc2\x00\xe4\xa8\x91@\xb0\xd8'.encode()
 modelo_yoga = inicializar_modelo()
 
 def requerir_logeo(f):
