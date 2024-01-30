@@ -23,7 +23,7 @@ function cerrarModal() {
 }
 
 // Ejecutar las cuentas regresivas en orden
-async function ejecutarCuentasRegresivas(inhalar, retener, exhalar, repeticiones) {
+async function ejecutarCuentasRegresivas(inhalar, retener, exhalar) {
     await cuentaRegresiva(inhalar, 'Inhalar');
     await cuentaRegresiva(retener, 'Retener');
     await cuentaRegresiva(exhalar, 'Exhalar');

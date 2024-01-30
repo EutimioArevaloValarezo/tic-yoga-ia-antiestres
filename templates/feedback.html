@@ -2,27 +2,34 @@
 
 {% block content %}
 
-
+<style>
+    .input-lg {
+        font-size: 20px;
+    }
+</style>
 
 <form action="/guardar_sesion" method="post">
     <div class="d-flex justify-content-center card mt-5 w-75 mx-auto">
         <div class="card-header text-center">
-            <h3>Datos de la rutina</h3>
+            <h3>¡¡BUEN TRABAJO {{ session['informacion_inicio']['get_nombre'] }}!!, ESTOS SON TUS DATOS DE RUTINA ({{ session['rutina_practicar'] }})</h3>
         </div>
-        <div class="card-body">
+        <div class="card-body fs-3">
 
             <div class="row g-3">
                 <div class="col-md-3">
                     <label class="form-label" for="duracion">Fecha:</label>
-                    <input class="form-control" id="duracion" type="text" name="get_fecha" value="{{ fecha }}" readonly="">
+                    <input class="form-control" id="duracion" type="text" name="get_fecha" value="{{ fecha }}"
+                        readonly="">
                 </div>
                 <div class="col-md-3">
                     <label class="form-label" for="horainicio">Hora de inicio:</label>
-                    <input class="form-control" id="horainicio" type="text" name="get_tiempoInicio" value="{{ tiempo_inicio }}" readonly="">
+                    <input class="form-control" id="horainicio" type="text" name="get_tiempoInicio"
+                        value="{{ tiempo_inicio }}" readonly="">
                 </div>
                 <div class="col-md-3">
                     <label class="form-label" for="horafin">Hora de fin:</label>
-                    <input class="form-control" id="horafin" type="text" name="get_tiempoFin" value="{{ tiempo_fin }}" readonly="">
+                    <input class="form-control" id="horafin" type="text" name="get_tiempoFin" value="{{ tiempo_fin }}"
+                        readonly="">
                 </div>
                 <div class="col-md-3">
                     <label class="form-label" for="duracion">Duración:</label>
@@ -34,58 +41,122 @@
         </div>
     </div>
 
-    <div class="d-flex justify-content-center card mt-2 w-75 mx-auto">
+    <div class="d-flex justify-content-center card mt-5 w-75 mx-auto">
         <div class="card-header text-center">
-            <h3>Datos del usuario</h3>
+            <h3>¿Cuál es tu estado de ánimo después de practicar la rutina de Yoga?</h3>
         </div>
         <div class="card-body">
-
             <div class="row g-3">
-                <div class="form-floating col-md-6">
-                    <input name="get_nombre" type="text" class="form-control" id="inputNombre" placeholder="Nombre:" required>
-                    <label for="inputNombre">Nombre:</label>
-                </div>
-                <div class="form-floating  col-md-6">
-                    <input name="get_apellido" type="text" class="form-control" id="inputApellido" placeholder="Apellido:" required>
-                    <label for="inputApellido">Apellido:</label>
-                </div>
-                <div class="form-floating col-md-4">
-                    <input name="get_cedula" type="text" class="form-control" id="inputCedula" placeholder="Cédula:" maxlength="10"
-                        minlength="10" required>
-                    <label for="inputCedula">Cédula:</label>
-                </div>
-                <div class="form-floating col-md-4">
-                    <input name="get_email" type="email" class="form-control" id="inputEmail" placeholder="E-mail:" required>
-                    <label for="inputEmail" class="form-label">E-mail:</label>
-                </div>
-                <div class="form-floating col-md-4">
-                    <input name="get_telefono" type="text" class="form-control" id="inputTelefono" placeholder="Teléfono:" minlength="10"
-                        maxlength="10" required>
-                    <label for="inputTelefono" class="form-label">Teléfono:</label>
-                </div>
-                <div class="col-md-6">
-                    <label for="inputFacultad" class="form-label">Facultad:</label>
-                    <select name="get_facultad" id="inputFacultad" class="form-select" required>
-                    </select>
-                </div>
-                <div class="col-md-6">
-                    <label for="inputCarrera" class="form-label">Carrera:</label>
-                    <select name="get_carrera" id="inputCarrera" class="form-select" required>
-                    </select>
+                <div class="col-md-12 text-center">
+                    <label for="rangeComoTeSientes" class="form-label">
+                        <p class="emoji" style="font-size: 120px;">😐</p>
+                    </label>
+                    <br>
+                    <input name="get_sentimiento_despues" type="range" class="form-range w-50" min="0" max="4" step="1"
+                        value="2" id="rangeComoTeSientes" required>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="d-flex justify-content-center card mt-2 w-75 mx-auto">
+    <div class="d-flex justify-content-center card mt-5 w-75 mx-auto">
+        <div class="card-header text-center">
+            <h3>ESCALA DE ANSIEDAD DE HAMILTON DESPUÉS DE PRACTICAR YOGA</h3>
+        </div>
+        <div class="card-body fs-3">
+
+            <div class="row g-3">
+                <div class="col-md-6 text-center">
+                    <img class="w-100" src="{{ url_for('static', filename='images/puntuacion-hamilton.png') }}"
+                        alt="Sistema de Puntuacion">
+                </div>
+                <div class="col-md-6 text-center">
+                    <ul class="list-group">
+                        <li class="list-group-item active" aria-current="true">ESCALA DE HAMILTON ANTES DE PRACTICAR YOGA</li>
+
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Síntomas somáticos generales (musculares)
+                            <span class="badge bg-primary rounded-pill">{{ session['informacion_inicio']['get_musculares_antes'] }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Síntomas somáticos generales (sensoriales)
+                            <span class="badge bg-primary rounded-pill">{{ session['informacion_inicio']['get_sensoriales_antes'] }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Síntomas respiratorios.
+                            <span class="badge bg-primary rounded-pill">{{ session['informacion_inicio']['get_respiratorio_antes'] }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Síntomas autónomos.
+                            <span class="badge bg-primary rounded-pill">{{ session['informacion_inicio']['get_autonomos_antes'] }}</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-6 text-center">
+                    <label for="rangeMuculares" class="form-label">
+                        <a tabindex="0" role="button" data-bs-toggle="popover" data-bs-trigger="hover"
+                            data-bs-placement="top" data-bs-title="Síntomas somáticos generales (musculares)"
+                            data-bs-content="Estos incluyen dolores y molestias musculares, rigidez muscular, contracciones musculares, sacudidas clónicas, bruxismo y disfonía espasmódica. Estos síntomas son indicativos de una tensión muscular constante.">
+                            <i class="fas fa-info-circle"></i>
+                        </a>
+                        Síntomas somáticos generales (musculares): <output id="output_a">0</output>
+                    </label>
+                    <input name="get_musculares_despues" type="range" class="form-range w-75" min="0" max="4" step="1" value="0"
+                        id="rangeMuculares" oninput="output_a.value = rangeMuculares.value" required>
+                </div>
+
+                <div class="col-md-6 text-center">
+                    <label for="rangeSensoriales" class="form-label">
+                        <a tabindex="1" role="button" data-bs-toggle="popover" data-bs-trigger="hover"
+                            data-bs-placement="top" data-bs-title="Síntomas somáticos generales (sensoriales)"
+                            data-bs-content="Estos pueden incluir zumbidos en los oídos, visión borrosa, sofocos y escalofríos, sensación de debilidad y hormigueo. Es como si tus sentidos estuvieran en hiperactividad.">
+                            <i class="fas fa-info-circle"></i>
+                        </a>
+                        Síntomas somáticos generales (sensoriales): <output id="output_b">0</output>
+                    </label>
+                    <input name="get_sensoriales_despues" type="range" class="form-range w-75" min="0" max="4" step="1"
+                        value="0" id="rangeSensoriales" oninput="output_b.value = rangeSensoriales.value" required>
+                </div>
+
+                <div class="col-md-6 text-center">
+                    <label for="rangeRespiratorio" class="form-label">
+                        <a tabindex="2" role="button" data-bs-toggle="popover" data-bs-trigger="hover"
+                            data-bs-placement="top" data-bs-title="Síntomas respiratorios"
+                            data-bs-content="Estos pueden incluir una sensación de opresión en el pecho, sensación de ahogo, suspiros y dificultad para respirar. Es como si te costara trabajo respirar normalmente.">
+                            <i class="fas fa-info-circle"></i>
+                        </a>
+                        Síntomas respiratorios: <output id="output_c">0</output></label>
+                    <input name="get_respiratorio_despues" type="range" class="form-range w-75" min="0" max="4" step="1"
+                        value="0" id="rangeRespiratorio" oninput="output_c.value = rangeRespiratorio.value" required>
+                </div>
+
+                <div class="col-md-6 text-center">
+                    <label for="rangeAutonomos" class="form-label">
+                        <a tabindex="5" role="button" data-bs-toggle="popover" data-bs-trigger="hover"
+                            data-bs-placement="top" data-bs-title="Síntomas autónomos"
+                            data-bs-content="Estos pueden incluir boca seca, rubor, palidez, tendencia a sudar, vértigos, dolores de cabeza por tensión y piloerección (pelos de punta). Son reacciones de tu cuerpo que no puedes controlar.">
+                            <i class="fas fa-info-circle"></i>
+                        </a>
+                        Síntomas autónomos: <output id="output_d">0</output></label>
+                    <input name="get_autonomos_despues" type="range" class="form-range w-75" min="0" max="4" step="1" value="0"
+                        id="rangeAutonomos" oninput="output_d.value = rangeAutonomos.value" required>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-center card mt-5 w-75 mx-auto">
         <div class="card-header text-center">
             <h3>Encuesta de satisfacción</h3>
         </div>
-        <div class="card-body">
+        <div class="card-body fs-3">
 
             <div class="row g-3">
-
-                <div class="col-md-4">
+                <div class="col-md-12 text-center">
+                    <img class="w-75" src="{{ url_for('static', filename='images/lickert.png') }}"
+                        alt="Sistema de Puntuacion">
+                </div>
+                <div class="col-md-6 text-center">
                     <label for="rangeFacilidadUso" class="form-label">
                         <a tabindex="0" role="button" data-bs-toggle="popover" data-bs-trigger="hover"
                             data-bs-placement="top" data-bs-title="Facilidad de uso"
@@ -94,11 +165,11 @@
                         </a>
                         Facilidad de uso: <output id="output1">0</output>
                     </label>
-                    <input name="get_FacilidadUso" type="range" class="form-range" min="0" max="5" step="0.5" value="0" id="rangeFacilidadUso"
-                        oninput="output1.value = rangeFacilidadUso.value" required>
+                    <input name="get_FacilidadUso" type="range" class="form-range w-75" min="0" max="4" step="1" value="0"
+                        id="rangeFacilidadUso" oninput="output1.value = rangeFacilidadUso.value" required>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-6 text-center">
                     <label for="rangeUtilidad" class="form-label">
                         <a tabindex="1" role="button" data-bs-toggle="popover" data-bs-trigger="hover"
                             data-bs-placement="top" data-bs-title="Utilidad Percibida"
@@ -107,11 +178,11 @@
                         </a>
                         Utilidad Percibida: <output id="output2">0</output>
                     </label>
-                    <input name="get_Utilidad" type="range" class="form-range" min="0" max="5" step="0.5" value="0" id="rangeUtilidad"
-                        oninput="output2.value = rangeUtilidad.value" required>
+                    <input name="get_Utilidad" type="range" class="form-range w-75" min="0" max="4" step="1" value="0"
+                        id="rangeUtilidad" oninput="output2.value = rangeUtilidad.value" required>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-6 text-center">
                     <label for="rangeAceptacionTecnologica" class="form-label">
                         <a tabindex="2" role="button" data-bs-toggle="popover" data-bs-trigger="hover"
                             data-bs-placement="top" data-bs-title="Aceptación Tecnológica"
@@ -119,36 +190,12 @@
                             <i class="fas fa-info-circle"></i>
                         </a>
                         Aceptación Tecnológica: <output id="output3">0</output></label>
-                    <input name="get_AceptacionTecnologica" type="range" class="form-range" min="0" max="5" step="0.5" value="0"
-                        id="rangeAceptacionTecnologica" oninput="output3.value = rangeAceptacionTecnologica.value"
-                        required>
+                    <input name="get_AceptacionTecnologica" type="range" class="form-range w-75" min="0" max="4" step="1"
+                        value="0" id="rangeAceptacionTecnologica"
+                        oninput="output3.value = rangeAceptacionTecnologica.value" required>
                 </div>
 
-                <div class="col-md-4">
-                    <label for="rangeMotivacion" class="form-label">
-                        <a tabindex="3" role="button" data-bs-toggle="popover" data-bs-trigger="hover"
-                            data-bs-placement="top" data-bs-title="Motivación para el Uso Continuo"
-                            data-bs-content="Evalúa la motivados para seguir utilizando la aplicación en el futuro. Se puede calificar en base al nivel de interés en continuar practicando yoga con la aplicación.">
-                            <i class="fas fa-info-circle"></i>
-                        </a>
-                        Motivación para el Uso Continuo: <output id="output6">0</output></label>
-                    <input name="get_Motivacion" type="range" class="form-range" min="0" max="5" step="0.5" value="0" id="rangeMotivacion"
-                        oninput="output6.value = rangeMotivacion.value" required>
-                </div>
-
-                <div class="col-md-4">
-                    <label for="rangeEfectividad" class="form-label">
-                        <a tabindex="4" role="button" data-bs-toggle="popover" data-bs-trigger="hover"
-                            data-bs-placement="top" data-bs-title="Efectividad en la Gestión del Estrés"
-                            data-bs-content="Mide la efectividad de la aplicación como herramienta de apoyo para la gestionar el estrés. Se puede calificar en base a si encuentra útiles las rutinas de yoga para relajarse.">
-                            <i class="fas fa-info-circle"></i>
-                        </a>
-                        Efectividad en la Gestión del Estrés: <output id="output5">0</output></label>
-                    <input name="get_Efectividad" type="range" class="form-range" min="0" max="5" step="0.5" value="0" id="rangeEfectividad"
-                        oninput="output5.value = rangeEfectividad.value" required>
-                </div>
-
-                <div class="col-md-4">
+                <div class="col-md-6 text-center">
                     <label for="rangeSatisfaccion" class="form-label">
                         <a tabindex="5" role="button" data-bs-toggle="popover" data-bs-trigger="hover"
                             data-bs-placement="top" data-bs-title="Calidad del Contenido"
@@ -156,27 +203,35 @@
                             <i class="fas fa-info-circle"></i>
                         </a>
                         Calidad del Contenido: <output id="output4">0</output></label>
-                    <input name="get_calidadContenido" type="range" class="form-range" min="0" max="5" step="0.5" value="0" id="rangeSatisfaccion"
-                        oninput="output4.value = rangeSatisfaccion.value" required>
+                    <input name="get_calidadContenido" type="range" class="form-range w-75" min="0" max="4" step="1"
+                        value="0" id="rangeSatisfaccion" oninput="output4.value = rangeSatisfaccion.value" required>
                 </div>
 
                 <div class="col-md-12">
-                    <label for="texComentarios" class="form-label">Comentarios adicionales:
-                        <span>(Opcional)</span></label>
-                    <textarea name="get_comentarios" class="form-control" id="texComentarios" rows="2"></textarea>
+                    <label for="texComentarios" class="form-label">Comentarios adicionales<em>(Opcional)</em>:</label>
+                    <textarea name="get_comentarios" class="form-control input-lg" id="texComentarios" rows="2"></textarea>
                 </div>
 
                 <div class="d-grid gap-2 col-md-12">
-                    <button type="submit" class="btn btn-primary btn-block">FINALIZAR</button>
+                    <button type="submit" class="btn btn-primary btn-block input-lg">FINALIZAR</button>
                 </div>
             </div>
         </div>
     </div>
 </form>
 
-<script src="{{ url_for('static', filename='js/cargar_facultad.js') }}"></script>
+<script>
+    var emojis = ['😠', '😞', '😐', '😊', '😄'];
+
+    $("#rangeComoTeSientes").mousemove(function () {
+        var i = $(this).val();
+        $(".emoji").html(emojis[i]);
+    });
+</script>
 
 <script type="text/javascript">
+    var voice = new Audio('../static/voice/finalizar.mp3');
+    voice.play();
     var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
     var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
         return new bootstrap.Popover(popoverTriggerEl)

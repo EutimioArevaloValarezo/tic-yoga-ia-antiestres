@@ -1,0 +1,181 @@
+{% extends "/plantillas/layout.html" %}
+
+{% block content %}
+
+<style>
+    .input-lg {
+        font-size: 20px;
+    }
+</style>
+
+<form action="/post_informacion" method="post" autocomplete="off">
+
+    <div class="d-flex justify-content-center card mt-5 w-75 mx-auto">
+        <div class="card-header text-center">
+            <h3>Datos del usuario</h3>
+        </div>
+        <div class="card-body fs-4">
+
+            <div class="row g-3">
+                <div class="col-md-4 ">
+                    <label for="inputNombre">Nombre:</label>
+                    <input name="get_nombre" type="text" class="form-control input-lg" id="inputNombre" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="inputApellido">Apellido:</label>
+                    <input name="get_apellido" type="text" class="form-control input-lg" id="inputApellido" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="inputCedula">Cédula:</label>
+                    <input name="get_cedula" type="text" class="form-control input-lg" id="inputCedula"
+                        maxlength="10" minlength="10" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="inputEdad" class="form-label">Edad:</label>
+                    <input name="get_edad" type="number" min="15" max="100" minlength="2" maxlength="3"
+                        class="form-control input-lg" id="inputEdad" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="inputGenero" class="form-label">Género:</label>
+                    <select name="get_genero" id="inputGenero" class="form-select input-lg" required>
+                        <option disabled selected>Seleccionar...</option>
+                        <option>Masculino</option>
+                        <option>Femenino</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="inputOrientacion" class="form-label">Orientación Sexual:</label>
+                    <select name="get_orientacion" id="inputOrientacion" class="form-select input-lg" required>
+                        <option disabled selected>Seleccionar...</option>
+                        <option>Heterosexual</option>
+                        <option>Homosexual</option>
+                        <option>Bisexual</option>
+                        <option>Asexual</option>
+                        <option>Pansexual</option>
+                        <option>Otra</option>
+                        <option>Prefiero no responder</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="inputFacultad" class="form-label">Facultad:</label>
+                    <select name="get_facultad" id="inputFacultad" class="form-select input-lg" required>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="inputCarrera" class="form-label">Carrera:</label>
+                    <select name="get_carrera" id="inputCarrera" class="form-select input-lg" required>
+                    </select>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-center card mt-3 w-75 mx-auto">
+        <div class="card-header text-center">
+            <h3>¿Cuál es tu estado de ánimo en este momento?</h3>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-12 text-center">
+                    <label for="rangeComoTeSientes" class="form-label">
+                        <p class="emoji" style="font-size: 120px;">😐</p>
+                    </label>
+                    <br>
+                    <input name="get_sentimiento_antes" type="range" class="form-range w-50" min="0" max="4" step="1"
+                        value="2" id="rangeComoTeSientes" required>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-center card mt-3 w-75 mx-auto">
+        <div class="card-header text-center">
+            <h3>ESCALA DE ANSIEDAD DE HAMILTON</h3>
+        </div>
+        <div class="card-body fs-3">
+
+            <div class="row g-3">
+                <div class="col-md-12 text-center">
+                    <img src="{{ url_for('static', filename='images/puntuacion-hamilton.png') }}" alt="Sistema de Puntuacion">
+                </div>
+                <div class="col-md-6 text-center">
+                    <label for="rangeMuculares" class="form-label">
+                        <a tabindex="0" role="button" data-bs-toggle="popover" data-bs-trigger="hover"
+                            data-bs-placement="top" data-bs-title="Síntomas somáticos generales (musculares)"
+                            data-bs-content="Estos incluyen dolores y molestias musculares, rigidez muscular, contracciones musculares, sacudidas clónicas, bruxismo y disfonía espasmódica. Estos síntomas son indicativos de una tensión muscular constante.">
+                            <i class="fas fa-info-circle"></i>
+                        </a>
+                        Síntomas somáticos generales (musculares): <output id="output1">0</output>
+                    </label>
+                    <input name="get_musculares_antes" type="range" class="form-range w-75" min="0" max="4" step="1" value="0"
+                        id="rangeMuculares" oninput="output1.value = rangeMuculares.value" required>
+                </div>
+
+                <div class="col-md-6 text-center">
+                    <label for="rangeSensoriales" class="form-label">
+                        <a tabindex="1" role="button" data-bs-toggle="popover" data-bs-trigger="hover"
+                            data-bs-placement="top" data-bs-title="Síntomas somáticos generales (sensoriales)"
+                            data-bs-content="Estos pueden incluir zumbidos en los oídos, visión borrosa, sofocos y escalofríos, sensación de debilidad y hormigueo. Es como si tus sentidos estuvieran en hiperactividad.">
+                            <i class="fas fa-info-circle"></i>
+                        </a>
+                        Síntomas somáticos generales (sensoriales): <output id="output2">0</output>
+                    </label>
+                    <input name="get_sensoriales_antes" type="range" class="form-range w-75" min="0" max="4" step="1" value="0"
+                        id="rangeSensoriales" oninput="output2.value = rangeSensoriales.value" required>
+                </div>
+
+                <div class="col-md-6 text-center">
+                    <label for="rangeRespiratorio" class="form-label">
+                        <a tabindex="2" role="button" data-bs-toggle="popover" data-bs-trigger="hover"
+                            data-bs-placement="top" data-bs-title="Síntomas respiratorios"
+                            data-bs-content="Estos pueden incluir una sensación de opresión en el pecho, sensación de ahogo, suspiros y dificultad para respirar. Es como si te costara trabajo respirar normalmente.">
+                            <i class="fas fa-info-circle"></i>
+                        </a>
+                        Síntomas respiratorios: <output id="output3">0</output></label>
+                    <input name="get_respiratorio_antes" type="range" class="form-range w-75" min="0" max="4" step="1"
+                        value="0" id="rangeRespiratorio"
+                        oninput="output3.value = rangeRespiratorio.value" required>
+                </div>
+
+                <div class="col-md-6 text-center">
+                    <label for="rangeAutonomos" class="form-label">
+                        <a tabindex="5" role="button" data-bs-toggle="popover" data-bs-trigger="hover"
+                            data-bs-placement="top" data-bs-title="Síntomas autónomos"
+                            data-bs-content="Estos pueden incluir boca seca, rubor, palidez, tendencia a sudar, vértigos, dolores de cabeza por tensión y piloerección (pelos de punta). Son reacciones de tu cuerpo que no puedes controlar.">
+                            <i class="fas fa-info-circle"></i>
+                        </a>
+                        Síntomas autónomos: <output id="output4">0</output></label>
+                    <input name="get_autonomos_antes" type="range" class="form-range w-75" min="0" max="4" step="1"
+                        value="0" id="rangeAutonomos" oninput="output4.value = rangeAutonomos.value" required>
+                </div>
+
+                <div class="d-grid gap-2 col-md-12">
+                    <button type="submit" class="btn btn-primary btn-block">PRACTICAR</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<script src="{{ url_for('static', filename='js/cargar_facultad.js') }}"></script>
+
+<script>
+    var emojis = ['😠', '😞', '😐', '😊', '😄'];
+
+    $("#rangeComoTeSientes").mousemove(function () {
+        var i = $(this).val();
+        $(".emoji").html(emojis[i]);
+    });
+</script>
+
+<script type="text/javascript">
+    var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+    var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+        return new bootstrap.Popover(popoverTriggerEl)
+    })
+
+</script>
+
+{% endblock %}

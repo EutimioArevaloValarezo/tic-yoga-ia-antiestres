@@ -40,18 +40,33 @@ def seleccionar():
 
 @app.route('/rutina/<id_rutina>', methods=['GET'])
 def get_rutina(id_rutina):
-    _, posturas = get_lista_posturas(id_rutina)
+    _, posturas, _ = get_lista_posturas(id_rutina)
     return jsonify(posturas)
 
 
 @app.route('/post_rutina', methods=['POST'])
 def post_rutina():
     id_rutina = request.form.get('get_rutina')
-    repeticiones, posturas = get_index_posturas(id_rutina)
+    repeticiones, posturas, rutina = get_index_posturas(id_rutina)
     session['index_posturas'] = posturas
     session['repeticiones'] = repeticiones
-    return render_template('calibrar.html')
+    session['rutina_practicar'] = rutina['nombre']
+    return redirect(url_for('informacion'))
 
+@app.route('/post_informacion', methods=['POST'])
+def post_informacion():
+    campos = [ 'get_nombre', 'get_apellido', 'get_cedula', 'get_edad', 'get_genero', 'get_orientacion', 
+        'get_facultad', 'get_carrera', 'get_sentimiento_antes', 'get_musculares_antes',
+        'get_sensoriales_antes', 'get_respiratorio_antes', 'get_autonomos_antes'
+    ]
+    datos = {campo: request.form.get(campo) for campo in campos}
+    session['informacion_inicio'] = datos
+    print(session['informacion_inicio'])
+    return redirect(url_for('calibrar'))
+
+@app.route('/practicar/informacion')
+def informacion():
+    return render_template('informacion.html')
 
 @app.route('/practicar/calibrar')
 def calibrar():
@@ -89,14 +104,13 @@ def feedback():
 @app.route('/guardar_sesion', methods=['POST'])
 def guardar_sesion():
     campos = [
-        'get_fecha', 'get_tiempoInicio', 'get_tiempoFin', 'get_duracion',
-        'get_nombre', 'get_apellido', 'get_cedula', 'get_email', 'get_telefono',
-        'get_facultad', 'get_carrera', 'get_FacilidadUso', 'get_Utilidad',
-        'get_AceptacionTecnologica', 'get_Motivacion', 'get_Efectividad',
-        'get_calidadContenido', 'get_comentarios'
+        'get_fecha', 'get_tiempoInicio', 'get_tiempoFin', 'get_duracion', 'get_sentimiento_despues', 'get_musculares_despues', 'get_sensoriales_despues', 'get_respiratorio_despues', 'get_autonomos_despues','get_FacilidadUso', 'get_Utilidad', 'get_AceptacionTecnologica', 'get_Motivacion', 'get_calidadContenido', 'get_comentarios'
     ]
-    datos = {campo: request.form.get(campo) for campo in campos}
-    insert_sesion(datos)
+    datos_antes = session.get('informacion_inicio', None)
+    print(datos_antes)
+    datos_despues = {campo: request.form.get(campo) for campo in campos}
+    nombre_rutina = session.get('rutina_practicar', None)
+    insert_sesion(datos_antes, datos_despues, nombre_rutina)
     return redirect(url_for('home'))
 
     
@@ -265,7 +279,7 @@ def ver_estadistica():
 def generar_estaditica():
     id_pymongo = request.form.get('id_pymongo')
     resultado = db['sesion'].find_one({'_id': id_pymongo})
-    if generar_grafico_estadisticas(resultado['estadisticas']):
+    if generar_grafico_estadisticas(resultado['satisfaccion']):
         return jsonify({'ruta_imagen': '../static/images/estadistica/grafico.png'})
     else:
         return jsonify({ 'error': 'Error grave' })

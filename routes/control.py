@@ -31,41 +31,29 @@ def generar_grafico_estadisticas(data):
         "Facilidad de Uso": data['facilidad_uso'],
         "Utilidad Percibida": data['utilidad'],
         "Aceptación Tecnológica": data['aceptacion_tecnologica'],
-        "Motivación para el Uso Continuo": data['motivacion'],
-        "Efectividad en la Gestión del Estrés": data['efectividad'],
         "Calidad del Contenido": data['calidad'],
-        "Satisfacción General": data['satisfaccion']
+        "Satisfacción General": data['total']
     }
  
-    # Colores para las calificaciones
-    colores = {
-        "Excelente": "green",
-        "Bueno": "yellow",
-        "Aceptable": "orange",
-        "Malo": "red"
-    }
+    # Definir los colores
+    colores = {0: 'red', 1: 'orange', 2: 'yellow', 3: 'lime', 4: 'darkgreen'}
 
-    # Función para asignar colores
-    def asignar_color(valor):
-        if valor >= 4:
-            return colores["Excelente"]
-        elif valor >= 3:
-            return colores["Bueno"]
-        elif valor >= 2:
-            return colores["Aceptable"]
-        else:
-            return colores["Malo"]
+    # Crear la figura y los ejes
+    fig, ax = plt.subplots()
 
-    # Crear gráfico de barras
-    fig = plt.figure(figsize=(10, 6))
-    for i, (categoria, valor) in enumerate(estadisticas.items()):
-        plt.barh(categoria, valor, color=asignar_color(valor))
-    plt.xlabel('Valor')
-    plt.title('Estadísticas')
-    plt.grid(True)
+    # Crear las barras
+    for i, (nombre, valor) in enumerate(estadisticas.items()):
+        ax.bar(i, valor, color=colores[int(valor)])
 
-    # Guardar el gráfico en un archivo
-    plt.savefig('./static/images/estadistica/grafico.png')
+    # Añadir un distintivo a la barra de "Satisfacción General"
+    ax.bar(len(estadisticas)-1, estadisticas["Satisfacción General"], color='blue', alpha=0.3)
+
+    # Añadir los nombres
+    ax.set_xticks(range(len(estadisticas)))
+    ax.set_xticklabels(estadisticas.keys(), rotation=45, horizontalalignment='right')
+
+    # Guardar la figura
+    plt.savefig('./static/images/estadistica/grafico.png', bbox_inches="tight")
 
     # Cerrar la figura
     plt.close(fig)
@@ -86,43 +74,78 @@ def get_sesiones():
         s['persona']['nombre'] = cipher_suite.decrypt(s['persona']['nombre']).decode()
         s['persona']['apellido'] = cipher_suite.decrypt(s['persona']['apellido']).decode()
         s['persona']['cedula'] = cipher_suite.decrypt(s['persona']['cedula']).decode()
-        s['persona']['email'] = cipher_suite.decrypt(s['persona']['email']).decode()
-        s['persona']['telefono'] = cipher_suite.decrypt(s['persona']['telefono']).decode()
+        s['persona']['edad'] = cipher_suite.decrypt(s['persona']['edad']).decode()
+        s['persona']['genero'] = cipher_suite.decrypt(s['persona']['genero']).decode()
+        s['persona']['orientacion'] = cipher_suite.decrypt(s['persona']['orientacion']).decode()
 
     return sesion
 
-def insert_sesion(datos):
-    facilidad_uso = float(datos['get_FacilidadUso'])
-    utilidad= float(datos['get_Utilidad'])
-    aceptacion_tecnologica = float(datos['get_AceptacionTecnologica'])
-    motivacion = float(datos['get_Motivacion'])
-    efectividad = float(datos['get_Efectividad'])
-    calidad = float(datos['get_calidadContenido'])
-    satisfaccion = (facilidad_uso + utilidad + aceptacion_tecnologica + motivacion + efectividad + calidad)/6
-    satisfaccion = round(satisfaccion, 1)
+def insert_sesion(datos_antes, datos_despues, nombre_rutina):
+
+    animo_antes = float(datos_antes['get_sentimiento_antes'])
+    animo_despues =float(datos_despues['get_sentimiento_despues'])
+
+    muscular_antes = float(datos_antes['get_musculares_antes'])
+    sensorial_antes = float(datos_antes['get_sensoriales_antes'])
+    respiratirio_antes = float(datos_antes['get_respiratorio_antes'])
+    autonomo_antes = float(datos_antes['get_autonomos_antes'])
+    total_antes = muscular_antes + sensorial_antes + respiratirio_antes + autonomo_antes
+
+    muscular_despues = float(datos_despues['get_musculares_despues'])
+    sensorial_despues = float(datos_despues['get_sensoriales_despues'])
+    respiratirio_despues = float(datos_despues['get_respiratorio_despues'])
+    autonomo_despues = float(datos_despues['get_autonomos_despues'])
+    total_despues = muscular_despues + sensorial_despues + respiratirio_despues + autonomo_despues
+
+    facilidad_uso = float(datos_despues['get_FacilidadUso'])
+    utilidad= float(datos_despues['get_Utilidad'])
+    aceptacion_tecnologica = float(datos_despues['get_AceptacionTecnologica'])
+    calidad = float(datos_despues['get_calidadContenido'])
+    satisfaccion = round(((facilidad_uso + utilidad + aceptacion_tecnologica + calidad)/4), 1)
+
     sesion = {
         "_id": uuid.uuid4().hex,
         "persona": {
-            "nombre": cipher_suite.encrypt(str(datos['get_nombre']).encode()),
-            "apellido": cipher_suite.encrypt(str(datos['get_apellido']).encode()),
-            "cedula": cipher_suite.encrypt(str(datos['get_cedula']).encode()),
-            "email": cipher_suite.encrypt(str(datos['get_email']).encode()),
-            "telefono": cipher_suite.encrypt(str(datos['get_telefono']).encode()),
+            "nombre": cipher_suite.encrypt(str(datos_antes['get_nombre']).encode()),
+            "apellido": cipher_suite.encrypt(str(datos_antes['get_apellido']).encode()),
+            "cedula": cipher_suite.encrypt(str(datos_antes['get_cedula']).encode()),
+            "edad": cipher_suite.encrypt(str(datos_antes['get_edad']).encode()),
+            "genero": cipher_suite.encrypt(str(datos_antes['get_genero']).encode()),
+            "orientacion": cipher_suite.encrypt(str(datos_antes['get_orientacion']).encode()),
         },
-        "carrera":datos['get_carrera'],
-        "fecha":datos['get_fecha'],
-        "hora_inicio":datos['get_tiempoInicio'],
-        "hora_fin":datos['get_tiempoFin'],
-        "duracion":datos['get_duracion'],
-        "estadisticas": {
+        "rutina": nombre_rutina,
+        "facultad":datos_antes['get_facultad'],
+        "carrera":datos_antes['get_carrera'],
+        "fecha":datos_despues['get_fecha'],
+        "hora_inicio":datos_despues['get_tiempoInicio'],
+        "hora_fin":datos_despues['get_tiempoFin'],
+        "duracion":datos_despues['get_duracion'],
+        "hamilton":{
+            "escala_somatica_antes": {
+                "estado_animo": animo_antes,
+                "muscular": muscular_antes,
+                "sentorial": sensorial_antes,
+                "respiratorio": respiratirio_antes,
+                "autonomo": autonomo_antes,
+                "total_antes": total_antes
+            },
+
+            "escala_somatica_despues": {
+                "estado_animo": animo_despues,
+                "muscular": muscular_despues,
+                "sentorial": sensorial_despues,
+                "respiratorio": respiratirio_despues,
+                "autonomo": autonomo_despues,
+                "total_despues": total_despues
+            }
+        },
+        "satisfaccion": {
             "facilidad_uso": facilidad_uso,
             "utilidad": utilidad,
             "aceptacion_tecnologica": aceptacion_tecnologica,
-            "motivacion": motivacion,
-            "efectividad": efectividad,
             "calidad": calidad,
-            "satisfaccion": satisfaccion,
-            "comentarios": datos['get_comentarios']
+            "total": satisfaccion,
+            "comentarios": datos_despues['get_comentarios']
         },
         "observacion":""
     }
@@ -144,6 +167,7 @@ def get_duracion_fecha(inicio, fin):
 
     hora_inicio = var_inicio.strftime('%H:%M:%S') 
     hora_fin = var_fin.strftime('%H:%M:%S')
+    # print("HORAAAAAAAAAAAA: ",hora_fin-hora_inicio)
 
     return duracion, minutos, segundos, fecha, hora_inicio, hora_fin 
 
@@ -159,12 +183,12 @@ def get_respiraciones(index_posturas):
     return respiraciones
 
 def get_index_posturas(id_rutina):
-    repeticiones, posturas = get_lista_posturas(id_rutina)
+    repeticiones, posturas, rutina = get_lista_posturas(id_rutina)
     index_posturas = []
     for postura in posturas:
         index_posturas.append(postura['index_modelo'])
 
-    return repeticiones, index_posturas
+    return repeticiones, index_posturas, rutina
 
 def get_lista_posturas(id_rutina):
     id_rutina_bson = bson.ObjectId(id_rutina)
@@ -177,7 +201,7 @@ def get_lista_posturas(id_rutina):
         postura.pop('_id', None)
         posturas.append(postura)
 
-    return repeticiones, posturas
+    return repeticiones, posturas, rutina
 
 def inicializar_modelo():
     modelo_yoga = models.densenet121(pretrained=False)
@@ -203,7 +227,7 @@ def inicializar_modelo():
     return modelo_yoga
 
 def get_posturas_rutina(modelo_yoga, app_socket, index_posturas, repeticiones):
-    camera = cv2.VideoCapture(1)
+    camera = cv2.VideoCapture(0)
     index_posturas_cont = 0
     repeticiones_cont = 0
     lista_respiraciones = get_respiraciones(index_posturas)
@@ -230,7 +254,7 @@ def get_posturas_rutina(modelo_yoga, app_socket, index_posturas, repeticiones):
                 precision = round(probabilities[index_posturas[index_posturas_cont]].item() * 100, 2)
                 if (index_posturas[index_posturas_cont] == 2):
                     precision = precision * 10
-                if precision >= 75:
+                if precision >= 10:
                     
                     controlar_respiraciones(app_socket, index_posturas_cont, lista_respiraciones)
                     index_posturas_cont += 1
@@ -280,7 +304,7 @@ def cont_landmarks(results):
     return cont_landmarks_aux
 
 def get_calibracion_rutina(app_socket):
-    camera = cv2.VideoCapture(1)
+    camera = cv2.VideoCapture(0)
     camera.set(3, 720)
     camera.set(4, 720)
     mpDraw = mp.solutions.drawing_utils

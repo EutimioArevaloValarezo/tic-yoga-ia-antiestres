@@ -9,12 +9,14 @@
                 <table class="table table-sm text-center">
                     <thead>
                         <tr>
-                            <th scope="col">Fecha</th>
-                            <th scope="col">Hora de Inicio</th>
-                            <th scope="col">Hora de Finalización</th>
-                            <th scope="col">Duración de la rutina</th>
+
                             <th scope="col">Estudiante</th>
-                            <th scope="col">Cedula</th>
+                            <th scope="col">Edad</th>
+                            <th scope="col">Genero</th>
+                            <th scope="col">Orientación Sexual</th>
+                            <th scope="col">Fecha</th>
+                            <th scope="col">Hora de Practica</th>
+                            <th scope="col">Duración de la rutina</th>
                             <th scope="col">Carrera</th>
                             <th scope="col">Satisfaccion</th>
                             <th scope="col">Observaciones</th>
@@ -23,27 +25,31 @@
                     <tbody>
                         {% for sesion in sesiones %}
                         <tr>
-
+                            <td>
+                                {{ sesion['persona']['nombre'] +" "+sesion['persona']['apellido'] }} <br> 
+                                <em>({{ sesion['persona']['cedula'] }})</em>
+                            </td>
+                            <td>
+                                {{ sesion['persona']['edad'] }}
+                            </td>
+                            <td>
+                                {{ sesion['persona']['genero'] }}
+                            </td>
+                            <td>
+                                {{ sesion['persona']['orientacion'] }}
+                            </td>
                             <td>
                                 {{ sesion['fecha'] }}
                             </td>
                             <td>
-                                {{ sesion['hora_inicio'] }}
+                                {{ sesion['hora_inicio'] }} - {{ sesion['hora_fin'] }}
                             </td>
-                            <td>
-                                {{ sesion['hora_fin'] }}
-                            </td>
+                            
                             <td>
                                 {{ sesion['duracion'] }}
                             </td>
                             <td>
-                                {{ sesion['persona']['nombre'] +" "+sesion['persona']['apellido'] }}
-                            </td>
-                            <td>
-                                {{ sesion['persona']['cedula'] }}
-                            </td>
-                            <td>
-                                {{ sesion['carrera']}}
+                                {{ sesion['carrera'] }}
                             </td>
                             <td>
                                 <!-- <input id="id_estadistica" type="hidden" value="{{ sesion['_id'] }}"> -->
