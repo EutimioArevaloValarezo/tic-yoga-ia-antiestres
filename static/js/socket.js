@@ -48,6 +48,18 @@ socket.on('pop_up', function (data) {
     ejecutarCuentasRegresivas(data.inhalar, data.retener, data.exhalar);
 });
 
+socket.on('pop_up_intrucciones', function (data) {
+    $('#my-modal-instruccion').modal('show');
+    var voice = new Audio('../static/voice/intrucciones.mp3');
+    voice.play();
+
+    // Agregas un event listener al audio para el evento 'ended'
+    voice.addEventListener('ended', function() {
+        // Cuando el audio termine, cierra el modal
+        $('#my-modal-instruccion').modal('hide');
+    });
+});
+
 socket.on('precision_update', function (data) {
     document.querySelector('#idTiempoRespiracion').textContent = data.tiempo_respiracion;
 });

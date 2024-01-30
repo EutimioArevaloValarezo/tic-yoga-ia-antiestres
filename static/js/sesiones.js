@@ -18,6 +18,26 @@ $(document).ready(function () {
         });
     });
 
+    $('.btn.btn-warning').click(function () {
+        var id_pymongo = $(this).data('id');
+        console.log(id_pymongo)
+        $.ajax({
+            type: 'POST',
+            url: '/generar_hamilton',
+            data: { 'id_pymongo': id_pymongo },
+            success: function (response) {
+                var ruta_imagen = response.ruta_imagen;
+                console.log(ruta_imagen)
+                // Añade un parámetro de consulta con un valor único (sello de tiempo)
+                ruta_imagen += '?t=' + new Date().getTime();
+                $('#estadisticaGrafica').attr('src', ruta_imagen);
+            },
+            error: function (error) {
+                console.log('Error en la solicitud Ajax:', error);
+            }
+        });
+    });
+
     $('.btn.btn-success').click(function () {
         var id_pymongo = $(this).data('id');
         var clases = $('#alert_obs').attr('class');

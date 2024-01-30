@@ -19,6 +19,7 @@
                             <th scope="col">Duración de la rutina</th>
                             <th scope="col">Carrera</th>
                             <th scope="col">Satisfaccion</th>
+                            <th scope="col">Hamilton</th>
                             <th scope="col">Observaciones</th>
                         </tr>
                     </thead>
@@ -26,7 +27,8 @@
                         {% for sesion in sesiones %}
                         <tr>
                             <td>
-                                {{ sesion['persona']['nombre'] +" "+sesion['persona']['apellido'] }} <br> 
+                                {{ sesion['persona']['nombre'][0].upper() + sesion['persona']['nombre'][1:].lower() +" "+ sesion['persona']['apellido'][0].upper() + sesion['persona']['apellido'][1:].lower() }}
+                                <br> 
                                 <em>({{ sesion['persona']['cedula'] }})</em>
                             </td>
                             <td>
@@ -58,6 +60,13 @@
                                         class="fas fa-chart-bar"></i>
                                 </button>
                             </td>
+                            <td>
+                                <!-- <input id="id_estadistica" type="hidden" value="{{ sesion['_id'] }}"> -->
+                                <button type="button" class="btn btn-warning" data-bs-toggle="modal"
+                                    data-bs-target="#estadisticaModal" data-id="{{ sesion['_id'] }}"><i
+                                        class="fas fa-chart-bar"></i>
+                                </button>
+                            </td>
                             <td class="text-center">
                                 <button type="button" class="btn btn-success" data-bs-toggle="modal"
                                     data-bs-target="#observacionModal" data-id="{{ sesion['_id'] }}"><i
@@ -81,8 +90,8 @@
                 <h1 class="modal-title fs-3" id="estadisticaLabel">Visualizar estadistica</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <img id="estadisticaGrafica" class="img-fluid rounded-start w-100" style="object-fit: contain;"
+            <div class="modal-body text-center">
+                <img id="estadisticaGrafica" class="img-fluid rounded-start w-75" style="object-fit: contain;"
                     alt="estadistica">
             </div>
             <div class="modal-footer">

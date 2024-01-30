@@ -60,6 +60,57 @@ def generar_grafico_estadisticas(data):
 
     return True
 
+def generar_grafico_hamilton(data):
+    try:
+        datos = {
+            "muscular_antes": data['escala_somatica_antes']['muscular'],
+            "sentorial_antes": data['escala_somatica_antes']['sentorial'],
+            "respiratorio_antes": data['escala_somatica_antes']['respiratorio'],
+            "autonomo_antes": data['escala_somatica_antes']['autonomo'],
+            "total_antes": data['escala_somatica_antes']['total_antes'],
+            "muscular_despues": data['escala_somatica_despues']['muscular'],
+            "sentorial_despues": data['escala_somatica_despues']['sentorial'],
+            "respiratorio_despues": data['escala_somatica_despues']['respiratorio'],
+            "autonomo_despues": data['escala_somatica_despues']['autonomo'],
+            "total_despues": data['escala_somatica_despues']['total_despues']
+        }
+        # Crear listas de datos 'antes' y 'despues'
+        antes = [datos[key] for key in datos if 'antes' in key]
+        despues = [datos[key] for key in datos if 'despues' in key]
+
+        # Crear etiquetas para el eje x
+        labels = [key.split('_')[0] for key in datos if 'antes' in key]
+
+        # Configurar la ubicación de las etiquetas y el ancho de las barras
+        x = np.arange(len(labels))
+        width = 0.35
+
+        # Crear la figura y los ejes
+        fig, ax = plt.subplots()
+
+        # Agregar las barras 'antes' y 'despues' al gráfico
+        rects1 = ax.bar(x - width/2, antes, width, label='Antes')
+        rects2 = ax.bar(x + width/2, despues, width, label='Despues')
+
+        # Agregar algunas etiquetas de texto, título y leyenda
+        ax.set_ylabel('Valores')
+        ax.set_title('Comparativa del antes y después de practicar yoga - Escala de Hamilton')
+        ax.set_xticks(x)
+        ax.set_xticklabels(labels)
+        ax.legend()
+
+        plt.ylim(0, 16)
+
+        # Guardar la figura
+        plt.savefig('./static/images/estadistica/grafico.png', bbox_inches="tight")
+
+        # Cerrar la figura
+        plt.close(fig)
+        return True
+    except Exception as e:
+        print(e)
+    
+
 def get_usuario(usuario):
     usuario = db['administrador'].find_one({"usuario":usuario})
     return usuario
@@ -232,6 +283,8 @@ def get_posturas_rutina(modelo_yoga, app_socket, index_posturas, repeticiones):
     repeticiones_cont = 0
     lista_respiraciones = get_respiraciones(index_posturas)
     last_prediction_time = time.time()
+    app_socket.emit('pop_up_intrucciones', {'instrucciones': 'Presentacion de instrucciones'})
+    time.sleep(10)
     app_socket.emit('pose_update', {'pose_index': index_posturas[index_posturas_cont]})
     while True:
         success, frame = camera.read()
@@ -254,7 +307,7 @@ def get_posturas_rutina(modelo_yoga, app_socket, index_posturas, repeticiones):
                 precision = round(probabilities[index_posturas[index_posturas_cont]].item() * 100, 2)
                 if (index_posturas[index_posturas_cont] == 2):
                     precision = precision * 10
-                if precision >= 10:
+                if precision >= 55:
                     
                     controlar_respiraciones(app_socket, index_posturas_cont, lista_respiraciones)
                     index_posturas_cont += 1
@@ -273,7 +326,7 @@ def get_posturas_rutina(modelo_yoga, app_socket, index_posturas, repeticiones):
                         app_socket.emit('pose_update', {'pose_index': index_posturas[index_posturas_cont]})
 
                 # Envia la precisión al cliente
-                app_socket.emit('precision_update', {'precision': round(precision*1.3, 2)})
+                app_socket.emit('precision_update', {'precision': round(precision*1.82, 2)})
 
                 # Actualiza el tiempo de la última predicción
                 last_prediction_time = current_time
@@ -322,7 +375,7 @@ def get_calibracion_rutina(app_socket):
             if result.pose_landmarks:
                 res_cont = cont_landmarks(result.pose_landmarks.landmark)
                 # print(res_cont)
-                if(res_cont == 17):
+                if(res_cont >= 25):
                     app_socket.emit('redireccion', {'ruta': '/practicar/rutina'})
                     break
                 # else:

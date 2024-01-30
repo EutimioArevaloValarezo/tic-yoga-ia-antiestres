@@ -9,7 +9,7 @@ from app import app
 from db import db
 from passlib.hash import pbkdf2_sha256
 
-from routes.control import inicializar_modelo, get_lista_posturas, get_index_posturas, get_calibracion_rutina, get_posturas_rutina, get_duracion_fecha, insert_sesion,insert_usuario, get_usuario, get_sesiones, generar_grafico_estadisticas
+from routes.control import inicializar_modelo, get_lista_posturas, get_index_posturas, get_calibracion_rutina, get_posturas_rutina, get_duracion_fecha, insert_sesion,insert_usuario, get_usuario, get_sesiones, generar_grafico_estadisticas, generar_grafico_hamilton
 
 app_socket = SocketIO(app)
 app.secret_key = '\xe9h\xa2z\xe5\xec\xcc\xcb\xc2\x00\xe4\xa8\x91@\xb0\xd8'.encode()
@@ -30,6 +30,7 @@ def home():
     iniciar_rutina = session.get('logeado', None)
     if iniciar_rutina is None:
         session.clear()
+    # print(db['sesion'].distinct('carrera'))
     return render_template('home.html')
 
 
@@ -61,7 +62,7 @@ def post_informacion():
     ]
     datos = {campo: request.form.get(campo) for campo in campos}
     session['informacion_inicio'] = datos
-    print(session['informacion_inicio'])
+    # print(session['informacion_inicio'])
     return redirect(url_for('calibrar'))
 
 @app.route('/practicar/informacion')
@@ -107,7 +108,7 @@ def guardar_sesion():
         'get_fecha', 'get_tiempoInicio', 'get_tiempoFin', 'get_duracion', 'get_sentimiento_despues', 'get_musculares_despues', 'get_sensoriales_despues', 'get_respiratorio_despues', 'get_autonomos_despues','get_FacilidadUso', 'get_Utilidad', 'get_AceptacionTecnologica', 'get_Motivacion', 'get_calidadContenido', 'get_comentarios'
     ]
     datos_antes = session.get('informacion_inicio', None)
-    print(datos_antes)
+    # print(datos_antes)
     datos_despues = {campo: request.form.get(campo) for campo in campos}
     nombre_rutina = session.get('rutina_practicar', None)
     insert_sesion(datos_antes, datos_despues, nombre_rutina)
@@ -280,8 +281,22 @@ def generar_estaditica():
     id_pymongo = request.form.get('id_pymongo')
     resultado = db['sesion'].find_one({'_id': id_pymongo})
     if generar_grafico_estadisticas(resultado['satisfaccion']):
+        
         return jsonify({'ruta_imagen': '../static/images/estadistica/grafico.png'})
     else:
+        
+        return jsonify({ 'error': 'Error grave' })
+        
+    
+@app.route('/generar_hamilton', methods=['POST'])
+def generar_hamilton():
+    id_pymongo = request.form.get('id_pymongo')
+    resultado = db['sesion'].find_one({'_id': id_pymongo})
+    if generar_grafico_hamilton(resultado['hamilton']):
+        # print('Bien')
+        return jsonify({'ruta_imagen': '../static/images/estadistica/grafico.png'})
+    else:
+        # print('Error')
         return jsonify({ 'error': 'Error grave' })
 
 # @app.errorhandler(404)
