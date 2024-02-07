@@ -26,6 +26,196 @@ from db import db
 key = 'E5bsJkAn2CYlsdDZepGyi69SHnCT77GQw8EUOiCTUO4='.encode()
 cipher_suite = Fernet(key)
 
+def generar_grafico_hamilton_general():
+    data = db['sesion'].find()
+    lista = []
+    for d in data:
+        lista.append(d['hamilton'])
+
+    estado_animo_antes = sum([item['escala_somatica_antes']['estado_animo'] for item in lista])
+    estado_animo_despues = sum([item['escala_somatica_despues']['estado_animo'] for item in lista])
+    promedio_muscular_antes = estado_animo_antes / len(lista)
+    promedio_sensorial_antes = estado_animo_despues / len(lista)
+
+    promedio_hamilton = {
+        'animo_antes': promedio_muscular_antes,
+        'animo_despues': promedio_sensorial_antes 
+    }
+
+    
+    
+def generar_grafico_hamilton_general():
+    data = db['sesion'].find()
+    lista = []
+    for d in data:
+        lista.append(d['hamilton'])
+
+
+def generar_grafico_estado_animo():
+    print()
+
+def generar_grafico_pastel_genero():
+    data = get_generos_cont()
+    nombres_carreras = list(data.keys())
+    conteos = list(data.values())
+    fig1, ax1 = plt.subplots()
+    ax1.pie(conteos, labels=nombres_carreras, autopct='%1.1f%%', startangle=90)
+    ax1.axis('equal')
+    plt.legend()
+
+    plt.savefig('./static/images/estadistica/pastel_generos.png', bbox_inches="tight")
+    plt.close()
+
+def get_generos_cont():
+    generos = ['Masculino', 'Femenino']
+    conteo_generos = {}
+
+    for genero in generos:
+        conteo = 0
+        for s in db['sesion'].find():
+            genero_desencriptado = cipher_suite.decrypt(s['persona']['genero']).decode()
+            if genero_desencriptado == genero:
+                conteo += 1
+        conteo_generos[genero] = conteo
+
+    return conteo_generos
+
+
+def generar_grafico_atiestres():
+    # Conexión a MongoDB
+    collection = db['sesion'].find()
+
+    # Contadores para las categorías
+    si_ayudo = 0
+    no_ayudo = 0
+    empeoro = 0
+
+    # Iterar sobre los documentos en la colección
+    for doc in collection:
+        total_antes = doc['hamilton']['escala_somatica_antes']['total_antes']
+        total_despues = doc['hamilton']['escala_somatica_despues']['total_despues']
+        
+        # Clasificar en las categorías
+        if total_antes > total_despues:
+            si_ayudo += 1
+        elif total_antes == total_despues:
+            no_ayudo += 1
+        else:
+            empeoro += 1
+
+    # Datos para el gráfico de pastel
+    labels = ['Si ayudó', 'No ayudó', 'Empeoró']
+    sizes = [si_ayudo, no_ayudo, empeoro]
+
+    # Generar el gráfico de pastel
+    fig1, ax1 = plt.subplots()
+    ax1.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90)
+    ax1.axis('equal')  # Para que el gráfico sea un círculo
+    plt.legend()
+    plt.savefig('./static/images/estadistica/antiestres.png', bbox_inches="tight")
+    plt.close()
+
+
+def generar_grafico_hamilton_general():
+    data = db['sesion'].find()
+    lista = []
+    for d in data:
+        lista.append(d['hamilton'])
+
+    suma_muscular_antes = sum([item['escala_somatica_antes']['muscular'] for item in lista])
+    suma_sensorial_antes = sum([item['escala_somatica_antes']['sentorial'] for item in lista])
+    suma_respiratorio_antes = sum([item['escala_somatica_antes']['respiratorio'] for item in lista])
+    suma_autonomo_antes = sum([item['escala_somatica_antes']['autonomo'] for item in lista])
+    suma_total_antes = sum([item['escala_somatica_antes']['total_antes'] for item in lista])
+
+    suma_muscular_despues = sum([item['escala_somatica_despues']['muscular'] for item in lista])
+    suma_sensorial_despues = sum([item['escala_somatica_despues']['sentorial'] for item in lista])
+    suma_respiratorio_despues = sum([item['escala_somatica_despues']['respiratorio'] for item in lista])
+    suma_autonomo_despues = sum([item['escala_somatica_despues']['autonomo'] for item in lista])
+    suma_total_despues = sum([item['escala_somatica_despues']['total_despues'] for item in lista])
+
+    promedio_muscular_antes = suma_muscular_antes / len(lista)
+    promedio_sensorial_antes = suma_sensorial_antes / len(lista)
+    promedio_respiratorio_antes = suma_respiratorio_antes / len(lista)
+    promedio_autonomo_antes = suma_autonomo_antes / len(lista)
+    promedio_total_antes = suma_total_antes / len(lista)
+
+    promedio_muscular_despues = suma_muscular_despues / len(lista)
+    promedio_sensorial_despues = suma_sensorial_despues / len(lista)
+    promedio_respiratorio_despues = suma_respiratorio_despues / len(lista)
+    promedio_autonomo_despues = suma_autonomo_despues / len(lista)
+    promedio_total_despues = suma_total_despues / len(lista)
+
+    promedio_hamilton = {
+        'escala_somatica_antes': {
+            'muscular': promedio_muscular_antes,
+            'sentorial': promedio_sensorial_antes,
+            'respiratorio': promedio_respiratorio_antes,
+            'autonomo': promedio_autonomo_antes,
+            'total_antes': promedio_total_antes
+        },
+
+        'escala_somatica_despues': {
+            'muscular': promedio_muscular_despues,
+            'sentorial': promedio_sensorial_despues,
+            'respiratorio': promedio_respiratorio_despues,
+            'autonomo': promedio_autonomo_despues,
+            'total_despues': promedio_total_despues
+        }
+    }
+
+    generar_grafico_hamilton(promedio_hamilton)
+
+def generar_grafico_satisfaccion_general():
+    data = db['sesion'].find()
+    lista = []
+    for d in data:
+        lista.append(d['satisfaccion'])
+
+    suma_facilidad_uso = sum([item['facilidad_uso'] for item in lista])
+    suma_utilidad = sum([item['utilidad'] for item in lista])
+    suma_aceptacion_tecnologica = sum([item['aceptacion_tecnologica'] for item in lista])
+    suma_calidad = sum([item['calidad'] for item in lista])
+    suma_total = sum([item['total'] for item in lista])
+
+    promedio_facilidad_uso = suma_facilidad_uso / len(lista)
+    promedio_utilidad = suma_utilidad / len(lista)
+    promedio_aceptacion_tecnologica = suma_aceptacion_tecnologica / len(lista)
+    promedio_calidad = suma_calidad / len(lista)
+    promedio_total = suma_total / len(lista)
+
+    promedio_estadistica = {
+        'facilidad_uso': promedio_facilidad_uso,
+        'utilidad': promedio_utilidad,
+        'aceptacion_tecnologica': promedio_aceptacion_tecnologica,
+        'calidad': promedio_calidad,
+        'total': promedio_total
+    }
+
+    generar_grafico_estadisticas(promedio_estadistica)
+
+def generar_grafico_pastel_carreras():
+    data = get_carreras_cont()
+    nombres_carreras = list(data.keys())
+    conteos = list(data.values())
+    fig1, ax1 = plt.subplots()
+    ax1.pie(conteos, labels=nombres_carreras, autopct='%1.1f%%', startangle=90)
+    ax1.axis('equal')
+    plt.legend()
+
+    plt.savefig('./static/images/estadistica/pastel_carreras.png', bbox_inches="tight")
+    plt.close()
+
+def get_carreras_cont():
+    carreras = db['sesion'].distinct('carrera')
+    conteo_carreras = {}
+
+    for carrera in carreras:
+        conteo = db['sesion'].count_documents({'carrera': carrera})
+        conteo_carreras[carrera] = conteo
+
+    return conteo_carreras
+
 def generar_grafico_estadisticas(data):
     estadisticas = {
         "Facilidad de Uso": data['facilidad_uso'],
@@ -35,27 +225,16 @@ def generar_grafico_estadisticas(data):
         "Satisfacción General": data['total']
     }
  
-    # Definir los colores
     colores = {0: 'red', 1: 'orange', 2: 'yellow', 3: 'lime', 4: 'darkgreen'}
-
-    # Crear la figura y los ejes
     fig, ax = plt.subplots()
-
-    # Crear las barras
     for i, (nombre, valor) in enumerate(estadisticas.items()):
         ax.bar(i, valor, color=colores[int(valor)])
 
-    # Añadir un distintivo a la barra de "Satisfacción General"
     ax.bar(len(estadisticas)-1, estadisticas["Satisfacción General"], color='blue', alpha=0.3)
-
-    # Añadir los nombres
     ax.set_xticks(range(len(estadisticas)))
     ax.set_xticklabels(estadisticas.keys(), rotation=45, horizontalalignment='right')
 
-    # Guardar la figura
-    plt.savefig('./static/images/estadistica/grafico.png', bbox_inches="tight")
-
-    # Cerrar la figura
+    plt.savefig('./static/images/estadistica/satisfaccion.png', bbox_inches="tight")
     plt.close(fig)
 
     return True
@@ -74,42 +253,31 @@ def generar_grafico_hamilton(data):
             "autonomo_despues": data['escala_somatica_despues']['autonomo'],
             "total_despues": data['escala_somatica_despues']['total_despues']
         }
-        # Crear listas de datos 'antes' y 'despues'
+        
         antes = [datos[key] for key in datos if 'antes' in key]
         despues = [datos[key] for key in datos if 'despues' in key]
 
-        # Crear etiquetas para el eje x
         labels = [key.split('_')[0] for key in datos if 'antes' in key]
-
-        # Configurar la ubicación de las etiquetas y el ancho de las barras
         x = np.arange(len(labels))
         width = 0.35
-
-        # Crear la figura y los ejes
         fig, ax = plt.subplots()
-
-        # Agregar las barras 'antes' y 'despues' al gráfico
         rects1 = ax.bar(x - width/2, antes, width, label='Antes')
         rects2 = ax.bar(x + width/2, despues, width, label='Despues')
-
-        # Agregar algunas etiquetas de texto, título y leyenda
         ax.set_ylabel('Valores')
         ax.set_title('Comparativa del antes y después de practicar yoga - Escala de Hamilton')
         ax.set_xticks(x)
         ax.set_xticklabels(labels)
         ax.legend()
 
-        plt.ylim(0, 16)
+        # plt.ylim(0, 16)
 
-        # Guardar la figura
-        plt.savefig('./static/images/estadistica/grafico.png', bbox_inches="tight")
-
-        # Cerrar la figura
+        plt.savefig('./static/images/estadistica/hamilton.png', bbox_inches="tight")
         plt.close(fig)
         return True
+    
     except Exception as e:
         print(e)
-    
+        return False
 
 def get_usuario(usuario):
     usuario = db['administrador'].find_one({"usuario":usuario})

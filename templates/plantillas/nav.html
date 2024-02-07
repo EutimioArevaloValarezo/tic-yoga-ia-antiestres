@@ -21,11 +21,11 @@
 <body>
 
   {% if session['logeado'] %}
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light fs-4">
+    <div class="container-fluid text-center">
       <a class="navbar-brand" href="/">
-        <img src="{{ url_for('static', filename='images/unl.png') }}" alt="logo" width="100" height="30"
-          class="d-inline-block align-text-top">
+        <img src="{{ url_for('static', filename='images/unl.png') }}" alt="logo" width="200" height="60"
+          class="d-inline-block align-text-top"><br>
         Yoga
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -43,7 +43,9 @@
           <li class="nav-item">
             <a class="nav-link" href="{{ url_for('ver_sesiones') }}">Visualizar sesiones</a>
           </li>
-
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('ver_estadistica_general') }}">Visualizar estadisticas</a>
+          </li>
           <li class="nav-item d-flex">
             <a class="nav-link" href="{{ url_for('cerrar_sesion_usuario') }}">Cerrar Sesión</a>
           </li>
@@ -52,11 +54,11 @@
     </div>
   </nav>
   {% else %}
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light fs-4">
+    <div class="container-fluid text-center">
       <a class="navbar-brand" href="/">
-        <img src="{{ url_for('static', filename='images/unl.png') }}" alt="logo" width="100" height="30"
-          class="d-inline-block align-text-top">
+        <img src="{{ url_for('static', filename='images/unl.png') }}" alt="logo" width="200" height="60"
+          class="d-inline-block align-text-top"><br>
         Yoga
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"

@@ -9,7 +9,7 @@ from app import app
 from db import db
 from passlib.hash import pbkdf2_sha256
 
-from routes.control import inicializar_modelo, get_lista_posturas, get_index_posturas, get_calibracion_rutina, get_posturas_rutina, get_duracion_fecha, insert_sesion,insert_usuario, get_usuario, get_sesiones, generar_grafico_estadisticas, generar_grafico_hamilton
+from routes.control import inicializar_modelo, get_lista_posturas, get_index_posturas, get_calibracion_rutina, get_posturas_rutina, get_duracion_fecha, insert_sesion,insert_usuario, get_usuario, get_sesiones, generar_grafico_estadisticas, generar_grafico_hamilton, generar_grafico_pastel_carreras, generar_grafico_satisfaccion_general, generar_grafico_hamilton_general, generar_grafico_atiestres, generar_grafico_pastel_genero
 
 app_socket = SocketIO(app)
 app.secret_key = '\xe9h\xa2z\xe5\xec\xcc\xcb\xc2\x00\xe4\xa8\x91@\xb0\xd8'.encode()
@@ -30,7 +30,6 @@ def home():
     iniciar_rutina = session.get('logeado', None)
     if iniciar_rutina is None:
         session.clear()
-    # print(db['sesion'].distinct('carrera'))
     return render_template('home.html')
 
 
@@ -101,7 +100,6 @@ def feedback():
                             segundos = segundos,
                             fecha=fecha)
 
-
 @app.route('/guardar_sesion', methods=['POST'])
 def guardar_sesion():
     campos = [
@@ -114,7 +112,6 @@ def guardar_sesion():
     insert_sesion(datos_antes, datos_despues, nombre_rutina)
     return redirect(url_for('home'))
 
-    
 @app.route('/iniciar_sesion')
 def iniciar_sesion():
     usuario = db['administrador']
@@ -131,7 +128,6 @@ def iniciar_sesion():
         insert_usuario(data)
     return render_template('admin/login.html')
 
-    
 @app.route('/iniciar_sesion_usuario', methods=['POST'])
 def iniciar_sesion_usuario():
     usuario = request.form.get('get_usuario')
@@ -272,19 +268,13 @@ def editar_observacion():
     else:
         return jsonify({ 'error': 'Error grave' })
 
-@app.route('/ver_estadistica')
-def ver_estadistica():
-    return render_template('admin/estadistica.html')
-
 @app.route('/generar_estaditica', methods=['POST'])
 def generar_estaditica():
     id_pymongo = request.form.get('id_pymongo')
     resultado = db['sesion'].find_one({'_id': id_pymongo})
     if generar_grafico_estadisticas(resultado['satisfaccion']):
-        
-        return jsonify({'ruta_imagen': '../static/images/estadistica/grafico.png'})
+        return jsonify({'ruta_imagen': '../static/images/estadistica/satisfaccion.png'})
     else:
-        
         return jsonify({ 'error': 'Error grave' })
         
     
@@ -294,10 +284,19 @@ def generar_hamilton():
     resultado = db['sesion'].find_one({'_id': id_pymongo})
     if generar_grafico_hamilton(resultado['hamilton']):
         # print('Bien')
-        return jsonify({'ruta_imagen': '../static/images/estadistica/grafico.png'})
+        return jsonify({'ruta_imagen': '../static/images/estadistica/hamilton.png'})
     else:
         # print('Error')
         return jsonify({ 'error': 'Error grave' })
+
+@app.route('/admin/ver_estadistica_general')
+def ver_estadistica_general():
+    generar_grafico_pastel_carreras()
+    generar_grafico_pastel_genero()
+    generar_grafico_satisfaccion_general()
+    generar_grafico_hamilton_general()
+    generar_grafico_atiestres()
+    return render_template('admin/ver_estadisticas.html')
 
 # @app.errorhandler(404)
 # def not_found_error(error):

@@ -1,0 +1,63 @@
+{% extends "/plantillas/nav.html" %}
+
+{% block content %}
+
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+    <div class="col ">
+        <div class="card">
+            <div class="card-header text-center">
+                <h3>Sesiones por Carrera</h3>
+            </div>
+            <div class="card-body text-center h-75">
+                <img src="{{ url_for('static', filename='images/estadistica/pastel_carreras.png') }}" class="img-fluid"
+                    alt="Grafico - Conteo de carreras">
+            </div>
+        </div>
+    </div>
+    <div class="col ">
+        <div class="card">
+            <div class="card-header text-center">
+                <h3>Sesiones por Genero</h3>
+            </div>
+            <div class="card-body text-center h-75">
+                <img src="{{ url_for('static', filename='images/estadistica/pastel_generos.png') }}" class="img-fluid"
+                    alt="Grafico - Conteo de genero">
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card">
+            <div class="card-header text-center">
+                <h3>Satisfacción General</h3>
+            </div>
+            <div class="card-body text-center h-75">
+                <img src="{{ url_for('static', filename='images/estadistica/satisfaccion.png') }}" class="img-fluid"
+                    alt="Grafico - Satisfaccion General">
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card">
+            <div class="card-header text-center">
+                <h3>Escala de Hamilton General</h3>
+            </div>
+            <div class="card-body text-center h-75">
+                <img src="{{ url_for('static', filename='images/estadistica/hamilton.png') }}" class="img-fluid"
+                    alt="Grafico - Hamilton General">
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card">
+            <div class="card-header text-center">
+                <h3>Ayuda antiéstres</h3>
+            </div>
+            <div class="card-body text-cente h-75">
+                <img src="{{ url_for('static', filename='images/estadistica/antiestres.png') }}" class="img-fluid"
+                    alt="Ayuda antiestres">
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
