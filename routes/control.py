@@ -52,7 +52,51 @@ def generar_grafico_hamilton_general():
 
 
 def generar_grafico_estado_animo():
-    print()
+    promedio_antes, promedio_despues = obtener_promedio_sintoma_general()
+    labels = ['Antes', 'Después']
+    values = [promedio_antes, promedio_despues]
+
+    fig, ax = plt.subplots()
+
+    # Crear las barras con colores específicos y sin espacio entre ellas
+    bars = ax.bar(labels, values, color=['#1f77b4', '#ff7f0e'], width=1.0)
+
+    for i in range(len(labels)):
+        ax.text(x = i, y = values[i]+0.1, s = round(values[i], 1), ha = 'center')
+
+    ax.set_xlabel('Momento')
+    ax.set_ylabel('Estado de Ánimo')
+    ax.set_title('Promedio de Estado de Ánimo'+' - General')
+
+    plt.ylim(0, 4)
+    plt.savefig('./static/images/estadistica/estado_animo.png', bbox_inches="tight")
+    plt.close()
+
+
+def obtener_promedio_sintoma_general():
+
+    sesiones = db['sesion'].find()
+
+    # Inicializar variables para almacenar los promedios
+    promedio_antes = 0
+    promedio_despues = 0
+    contador_antes = 0
+    contador_despues = 0
+
+    # Calcular promedios
+    for sesion in sesiones:
+        promedio_antes += sesion['hamilton']['escala_somatica_antes']['estado_animo']
+        promedio_despues += sesion['hamilton']['escala_somatica_despues']['estado_animo']
+        contador_antes += 1
+        contador_despues += 1
+
+    # Calcular promedios finales
+    if contador_antes != 0:
+        promedio_antes /= contador_antes
+    if contador_despues != 0:
+        promedio_despues /= contador_despues
+
+    return promedio_antes, promedio_despues
 
 def generar_grafico_pastel_genero():
     data = get_generos_cont()
@@ -92,8 +136,8 @@ def generar_grafico_atiestres():
 
     # Iterar sobre los documentos en la colección
     for doc in collection:
-        total_antes = doc['hamilton']['escala_somatica_antes']['total_antes']
-        total_despues = doc['hamilton']['escala_somatica_despues']['total_despues']
+        total_antes = doc['hamilton']['escala_somatica_antes']['total']
+        total_despues = doc['hamilton']['escala_somatica_despues']['total']
         
         # Clasificar en las categorías
         if total_antes > total_despues:
@@ -126,13 +170,13 @@ def generar_grafico_hamilton_general():
     suma_sensorial_antes = sum([item['escala_somatica_antes']['sentorial'] for item in lista])
     suma_respiratorio_antes = sum([item['escala_somatica_antes']['respiratorio'] for item in lista])
     suma_autonomo_antes = sum([item['escala_somatica_antes']['autonomo'] for item in lista])
-    suma_total_antes = sum([item['escala_somatica_antes']['total_antes'] for item in lista])
+    suma_total_antes = sum([item['escala_somatica_antes']['total'] for item in lista])
 
     suma_muscular_despues = sum([item['escala_somatica_despues']['muscular'] for item in lista])
     suma_sensorial_despues = sum([item['escala_somatica_despues']['sentorial'] for item in lista])
     suma_respiratorio_despues = sum([item['escala_somatica_despues']['respiratorio'] for item in lista])
     suma_autonomo_despues = sum([item['escala_somatica_despues']['autonomo'] for item in lista])
-    suma_total_despues = sum([item['escala_somatica_despues']['total_despues'] for item in lista])
+    suma_total_despues = sum([item['escala_somatica_despues']['total'] for item in lista])
 
     promedio_muscular_antes = suma_muscular_antes / len(lista)
     promedio_sensorial_antes = suma_sensorial_antes / len(lista)
@@ -246,12 +290,12 @@ def generar_grafico_hamilton(data):
             "sentorial_antes": data['escala_somatica_antes']['sentorial'],
             "respiratorio_antes": data['escala_somatica_antes']['respiratorio'],
             "autonomo_antes": data['escala_somatica_antes']['autonomo'],
-            "total_antes": data['escala_somatica_antes']['total_antes'],
+            "total_antes": data['escala_somatica_antes']['total'],
             "muscular_despues": data['escala_somatica_despues']['muscular'],
             "sentorial_despues": data['escala_somatica_despues']['sentorial'],
             "respiratorio_despues": data['escala_somatica_despues']['respiratorio'],
             "autonomo_despues": data['escala_somatica_despues']['autonomo'],
-            "total_despues": data['escala_somatica_despues']['total_despues']
+            "total_despues": data['escala_somatica_despues']['total']
         }
         
         antes = [datos[key] for key in datos if 'antes' in key]

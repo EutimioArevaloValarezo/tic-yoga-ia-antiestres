@@ -9,7 +9,7 @@ from app import app
 from db import db
 from passlib.hash import pbkdf2_sha256
 
-from routes.control import inicializar_modelo, get_lista_posturas, get_index_posturas, get_calibracion_rutina, get_posturas_rutina, get_duracion_fecha, insert_sesion,insert_usuario, get_usuario, get_sesiones, generar_grafico_estadisticas, generar_grafico_hamilton, generar_grafico_pastel_carreras, generar_grafico_satisfaccion_general, generar_grafico_hamilton_general, generar_grafico_atiestres, generar_grafico_pastel_genero
+from routes.control import inicializar_modelo, get_lista_posturas, get_index_posturas, get_calibracion_rutina, get_posturas_rutina, get_duracion_fecha, insert_sesion,insert_usuario, get_usuario, get_sesiones, generar_grafico_estadisticas, generar_grafico_hamilton, generar_grafico_pastel_carreras, generar_grafico_satisfaccion_general, generar_grafico_hamilton_general, generar_grafico_atiestres, generar_grafico_pastel_genero, generar_grafico_estado_animo
 
 app_socket = SocketIO(app)
 app.secret_key = '\xe9h\xa2z\xe5\xec\xcc\xcb\xc2\x00\xe4\xa8\x91@\xb0\xd8'.encode()
@@ -292,6 +292,7 @@ def generar_hamilton():
 @app.route('/admin/ver_estadistica_general')
 def ver_estadistica_general():
     generar_grafico_pastel_carreras()
+    generar_grafico_estado_animo()
     generar_grafico_pastel_genero()
     generar_grafico_satisfaccion_general()
     generar_grafico_hamilton_general()
